@@ -38,38 +38,25 @@
                         <h3>Account Details</h3>
                         
                         <div class="account-details-form">
-                            <form action="/profile_update/{{user.id}}" method="post">
+                            <form id="profile-form" action="/profile_update/{{user.id}}" method="post">
                                 {% csrf_token %}
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="single-input-item">
-                                            <label for="first-name" class="required">First Name</label>
-                                            <input type="text" name="first_name" id="first-name" value="{{user.first_name}}"
-                                                   placeholder="First Name"/>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6">
-                                        <div class="single-input-item">
-                                            <label for="last-name" class="required">Last Name</label>
-                                            <input type="text" name="last_name" id="last-name" value="{{user.last_name}}" placeholder="Last Name"/>
-                                        </div>
-                                    </div>
-                                </div>
-
+                            
                                 <div class="single-input-item">
                                     <label for="display-name" class="required">Full Name</label>
-                                    <input type="text" id="display-name" name="full_name" value="{{user.full_name}}" placeholder="Full Name"/>
+                                    <input type="text" id="display-name" name="full_name" value="{{user.full_name}}" placeholder="Full Name" />
                                 </div>
-
+                            
                                 <div class="single-input-item">
-                                    <label for="email" class="required">Email Addres</label>
-                                    <input type="email" id="email" name="email" value="{{user.email}}"placeholder="Email Address"/>
+                                    <label for="email" class="required">Email Address</label>
+                                    <input type="email" id="email" name="email" value="{{user.email}}" placeholder="Email Address" required />
                                 </div>
+                            
                                 <div class="single-input-item">
-                                    <label for="Phone No." class="required">Phone No.</label>
-                                    <input type="text" id="phno" name="ph_no" value="{{user.ph_no}}" placeholder="Phone Number"/>
+                                    <label for="phno" class="required">Phone No.</label>
+                                    <input type="text" id="phno" name="ph_no" value="{{user.ph_no}}" placeholder="Phone Number" required />
                                 </div>
+                            
+                            
                                 
 
                                 <fieldset>
@@ -103,7 +90,7 @@
                                 </fieldset>
 
                                 <div class="single-input-item">
-                                    <button class="btn-login btn-add-to-cart">Save Changes</button>
+                                    <button class="btn-login btn-add-to-cart" id="submit-button">Update Profile</button>
                                 </div>
                             </form>
                         </div>
@@ -259,3 +246,39 @@
 </div>
 
 {% endblock %}
+
+{% block script %}
+<script>
+    document.getElementById('profile-form').addEventListener('submit', function (event) {
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phno').value;
+
+        let isValid = true;
+
+        if (!validateEmail(email)) {
+            alert('Please enter a valid email address.');
+            isValid = false;
+        }
+
+        if (!validatePhoneNumber(phone)) {
+            alert('Phone number should have 10 digits and no other characters.');
+            isValid = false;
+        }
+
+        if (!isValid) {
+            event.preventDefault(); // Prevent the form from submitting
+        }
+    });
+
+    function validateEmail(email) {
+        const emailRegex = /^[a-zA-Z0-9._-]+@gmail\.com$/;
+        return emailRegex.test(email);
+    }
+
+    function validatePhoneNumber(phone) {
+        // Regular expression for a 10-digit phone number
+        const phoneRegex = /^\d{10}$/;
+        return phoneRegex.test(phone);
+    }
+</script>
+{% endblock script %}
