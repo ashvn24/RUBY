@@ -73,14 +73,6 @@
                         <form action="{% url 'add_addrs' %}" method="post">
                             {% csrf_token %}
 
-                            <div>
-                                {% for message in messages %}
-                                <p style="color:red;">
-                                    {{message}}
-                                </p>
-                                {% endfor %}
-                            </div>
-
                             <div class="checkout-box-wrap">
                                 <div class="single-input-item">
                                     <div class="custom-control custom-checkbox">

@@ -12,22 +12,20 @@
 <div class="tab-content" id="login-reg-tabcontent">
   <div class="tab-pane fade show active" id="login" role="tabpanel">
       <div class="login-reg-form-wrap">
-    {% comment %} <form method="post">
-        {% csrf_token %}
-  
-        <input type="text" class="form-control" name="otp" aria-label="Username">
-        <input class="btn btn-primary" type="submit" value="Submit">
-    </form> {% endcomment %}
-        <form method="post">
+        <form method="post" id="otp-form">
           {% csrf_token %}
           <div class="single-input-item">
-              <input type="text" name='otp' placeholder="Enter the otp" />
+              <input type="text" id="otp" name="otp" placeholder="Enter the OTP" />
           </div>
           <div class="single-input-item">
-            <button class="btn-login" type="submit">Login</button>
+              <button class="btn-login" type="submit" id="submit-button">Login</button>
           </div>
-        </form>
+      </form>
+      
     </div>
+    {% for message in messages %}
+      {{message}}
+      {% endfor %}
   </div>
 </div>
 </div>
@@ -38,3 +36,16 @@
 
 
 {% endblock %} 
+{% block script %}
+<script>
+  document.getElementById('otp-form').addEventListener('submit', function (event) {
+      const otpField = document.getElementById('otp');
+      const otpValue = otpField.value;
+
+      if (otpValue.trim() === '' || isNaN(otpValue) || parseInt(otpValue) < 0) {
+        alert('Please enter a valid OTP.');
+        event.preventDefault(); // Prevent the form from submitting
+      }
+  });
+</script>
+{% endblock script %}
