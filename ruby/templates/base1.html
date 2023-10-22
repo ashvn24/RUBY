@@ -31,6 +31,10 @@
 
     <!-- Modernizer JS -->
     <script src="{% static 'assets/js/vendor/modernizr-2.8.3.min.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Include your custom JavaScript file -->
+    <script src="{% static 'js/validation.js' %}"></script>
 
 
     <!--[if lt IE 9]>
@@ -93,6 +97,7 @@
 <script src="{% static 'assets/js/vendor/bootstrap.min.js' %}"></script>
 <!--=== Plugins Min Js ===-->
 <script src="{% static 'assets/js/plugins.js' %}"></script>
+
 
 {% block script %}
 

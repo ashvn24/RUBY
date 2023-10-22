@@ -223,93 +223,71 @@
                 <!-- Single Tab Content Start -->
                 <div class="tab-pane fade show active" id="address" role="tabpanel">
                     <div class="account-details-form">
-                        <form action="{% url 'add_addrs' %}" method="post">
-                            
+                        <form id="address-form" action="{% url 'add_addrs' %}" method="post">
                             {% csrf_token %}
                             <div class="row">
-                                <div class="col-lg-6">
+                                <div class="col-lg-12">
                                     <div class="single-input-item">
-                                        <label for="first-name" class="required">First Name</label>
-                                        <input type="text" name="adfirst_name" id="first-name" 
-                                               placeholder="First Name"/>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-6">
-                                    <div class="single-input-item">
-                                        <label for="last-name" class="required">Last Name</label>
-                                        <input type="text" name="adlast_name" id="last-name"  placeholder="Last Name"/>
+                                        <label for="adfirst_name" class="required">Full Name</label>
+                                        <input type="text" id="adfirst_name" name="adfirst_name" placeholder="Full Name"  />
                                     </div>
                                 </div>
                             </div>
+                        
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="single-input-item">
-                                        <label for="email" class="required">Email Addres</label>
-                                        <input type="email" id="email" name="ademail" placeholder="Email Address"/>
+                                        <label for="ademail" class="required">Email Address</label>
+                                        <input type="email" id="ademail" name="ademail" placeholder="Email Address"  />
                                     </div>
                                 </div>
-
+                        
                                 <div class="col-lg-6">
                                     <div class="single-input-item">
-                                        <label for="Phone No." class="required">Phone No.</label>
-                                        <input type="text" id="phno" name="adph_no"  placeholder="Phone Number"/>
+                                        <label for="adph_no" class="required">Phone No.</label>
+                                        <input type="text" id="adph_no" name="adph_no" placeholder="Phone Number"  />
                                     </div>
                                 </div>
                             </div>
-
-                            
-
+                        
                             <div class="single-input-item">
-                                <label for="addressline1" class="required">Address</label>
-                                <textarea  name="adaddressline1" placeholder="Email Address"></textarea>
+                                <label for="adaddressline1" class="required">Address</label>
+                                <textarea id="adaddressline1" name="adaddressline1" placeholder="Address" ></textarea>
                             </div>
-                            {% comment %} <div class="single-input-item">
-                                <label for="Phone No." class="">Address 2</label>
-                                <textarea  name="addressline2" placeholder="Email Address">{{user.email}}</textarea>
-                            </div>  {% endcomment %}
+                        
                             <div class="row">
                                 <div class="col-lg-3">
                                     <div class="single-input-item">
-                                        <label for="email" class="required">Country</label>
-                                        <input type="text" id="adcountry" name="adcountry" placeholder="Country"/>
+                                        <label for="adcountry" class="required">Country</label>
+                                        <input type="text" id="adcountry" name="adcountry" placeholder="Country"  />
                                     </div>
                                 </div>
-
+                        
                                 <div class="col-lg-3">
                                     <div class="single-input-item">
-                                        <label for="Phone No." class="required">State</label>
-                                        <input type="text" id="state" name="adstate"  placeholder="State"/>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3">
-                                    <div class="single-input-item">
-                                        <label for="Phone No." class="required">City</label>
-                                        <input type="text" id="city" name="adcity" placeholder="City"/>
+                                        <label for="adstate" class="required">State</label>
+                                        <input type="text" id="adstate" name="adstate" placeholder="State"  />
                                     </div>
                                 </div>
                                 <div class="col-lg-3">
                                     <div class="single-input-item">
-                                        <label for="Phone No." class="required">Pin</label>
-                                        <input type="text" id="pin" name="adpin"  placeholder="pin"/>
+                                        <label for "adcity" class="required">City</label>
+                                        <input type="text" id="adcity" name="adcity" placeholder="City"  />
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="single-input-item">
+                                        <label for="adpin" class="required">Pin</label>
+                                        <input type="text" id="adpin" name="adpin" placeholder="Pin"  />
                                     </div>
                                 </div>
                             </div>
-
-                            
-
+                        
                             <div class="single-input-item">
-                                <button class="btn-login btn-add-to-cart">Save Changes</button>
+                                <button class="btn-login btn-add-to-cart" id="submit-button">Save Changes</button>
                             </div>
-                            <div>
-                                {% for message in messages %}
-                                <p style="color:red;">
-                                    {{message}}
-                                </p>
-                                {% endfor %}
-                            </div>
-                            
                         </form>
+                        
                     </div>
                 </div>
                 <!-- Single Tab Content End -->
@@ -327,3 +305,79 @@
 </div>
 
 {% endblock %}
+
+{% block script %}
+<script>
+    document.getElementById('address-form').addEventListener('submit', function (event) {
+        const name = document.getElementById('adfirst_name').value;
+        const email = document.getElementById('ademail').value;
+        const phone = document.getElementById('adph_no').value;
+        const address = document.getElementById('adaddressline1').value;
+        const country = document.getElementById('adcountry').value;
+        const state = document.getElementById('adstate').value;
+        const city = document.getElementById('adcity').value;
+        const pin = document.getElementById('adpin').value;
+
+        let isValid = true;
+
+        if (name.trim().length <= 3 || /\d/.test(name)) {
+            alert('Full Name should have more than 3 characters and should not contain numbers.');
+            isValid = false;
+        }
+
+        if (email.trim() === '' || !validateEmail(email)) {
+            alert('Please enter a valid email address.');
+            isValid = false;
+        }
+
+        if (phone.trim() === '' || !validatePhoneNumber(phone)) {
+            alert('Phone number should have 10 digits and no other characters.');
+            isValid = false;
+        }
+
+        if (address.trim() === '') {
+            alert('Address is required.');
+            isValid = false;
+        }
+
+        if (country.trim() === '') {
+            alert('Country is required.');
+            isValid = false;
+        }
+
+        if (state.trim() === '') {
+            alert('State is required.');
+            isValid = false;
+        }
+
+        if (city.trim() === '') {
+            alert('City is required.');
+            isValid = false;
+        }
+
+        if (!validatePinCode(pin)) {
+            alert('Pin code should have 6 digits and no other characters.');
+            isValid = false;
+        }
+
+        if (!isValid) {
+            event.preventDefault(); // Prevent the form from submitting
+        }
+    });
+
+    function validateEmail(email) {
+        const emailRegex = /^[a-zA-Z0-9._-]+@gmail\.com$/;
+        return emailRegex.test(email);
+    }
+
+    function validatePhoneNumber(phone) {
+        return /^\d{10}$/.test(phone);
+    }
+
+    function validatePinCode(pin) {
+        // Check if it's a positive number with exactly 6 digits
+        return /^\d{6}$/.test(pin);
+    }
+</script>
+
+    {% endblock script %}

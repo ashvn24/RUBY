@@ -108,7 +108,7 @@ class cartitem(models.Model):
 class Address(models.Model):
     user=models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     first_name=models.CharField(max_length=20)
-    last_name=models.CharField(max_length=20)
+    last_name=models.CharField(max_length=20,blank=True,null=True)
     email = models.EmailField( unique=False)
     phoneNumber = models.CharField(max_length=15)
     addressline1 = models.CharField(max_length=255)

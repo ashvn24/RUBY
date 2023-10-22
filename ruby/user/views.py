@@ -142,7 +142,7 @@ def log(request):
                 cart_item_db.delete()
                 auth.login(request, user)
                 request.session['email'] =  login_email
-                messages.success(request, 'Login successful.')
+                
                 return redirect('index')  # Redirect to the dashboard page after successful login
             else:
                 

@@ -34,9 +34,9 @@ def home(request):
     return render(request,'main/home.html',context)
 
 def shop(request):
+   
     maincategory=main_category.objects.all().order_by('id')
     
-    # prod=product.objects.filter(is_deleted=False).order_by('id')
     
     sub=sub_category.objects.values('name').distinct()
 
@@ -49,9 +49,9 @@ def shop(request):
     user_input_search = request.GET.get('product')
     selected_sorting = request.GET.get('sort', 'Position')
     print('select:',selected_sorting)
-    
     print(type)
     print('gender',gender)
+    
     if gender:
         desired_main_category = main_category.objects.get(id=gender)
         prod= product.objects.filter(categories__category__maincat__name=desired_main_category,is_deleted=False)
@@ -66,6 +66,7 @@ def shop(request):
             prod = pdt_container
         else:
             prod = pdt_container
+            
             messages.info(request, f"There is no product with this name '{user_input_search}'")
     elif selected_sorting:
         if selected_sorting == "Position" :
@@ -86,6 +87,7 @@ def shop(request):
         'prod':prod,
         'sub':sub,
         'cat':cat,
+        
         
     }
     
@@ -111,6 +113,7 @@ def product_details(request,slug):
         }
     return render(request,'main/product_detail.html',context)
 
+@login_required(login_url='login')
 def Profile(request):
     maincategory=main_category.objects.all().order_by('id')
     user=request.user
@@ -220,9 +223,7 @@ def add_adrs(request):
         city=request.POST.get('adcity')
         pin=request.POST.get('adpin')
         check=request.POST.get('check','')
-        if Address.objects.filter(email=email).exists():
-            messages.info(request,"Email Already Taken")
-            return redirect('checkout')
+        
         
         Address.objects.create(
             user=request.user,
