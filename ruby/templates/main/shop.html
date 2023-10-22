@@ -1,0 +1,251 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div id="page-content-wrapper" class="p-9">
+    <div class="ruby-container">
+        <div class="row">
+            <!-- Sidebar Area Start -->
+            <div class="col-lg-3 mt-5 mt-lg-0">
+                <div id="sidebar-area-wrap">
+                    <!-- Single Sidebar Item Start -->
+                    <div class="single-sidebar-wrap">
+                        <h2 class="sidebar-title">Shop By</h2>
+                        <div class="sidebar-body">
+                            
+                            <div class="shopping-option">
+                                <form id="checkboxForm" action="{% url 'shop' %}" method="get">
+                                
+                                <h3>Shopping Options</h3>
+                                
+                                
+                                <div class="shopping-option-item">
+                                    <h4>GENDER</h4>
+                                    <hr>
+                                    <br>
+                                    <ul class="sidebar-list">
+                                        {% for i in maincategory %}
+                                        <label>
+                                            <input type="checkbox" name="gender" value="{{ i.id }}"> {{ i.name }}
+                                        </label><br>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                <div class="shopping-option-item">
+                                    <h4>MATERIAL</h4>
+                                    <hr>
+                                    <br>
+                                    <ul class="sidebar-list">
+                                        {% for i in cat %}
+                                        <label>
+                                            <input type="checkbox" name="material" value="{{ i.name }}"> {{ i.name }}
+                                        </label><br>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                <div class="shopping-option-item">
+                                    <h4>CATEGORY</h4>
+                                    <hr>
+                                    <br>
+                                    <ul class="sidebar-list">
+                                        {% for i in sub %}
+                                        <label>
+                                            <input type="checkbox" name="category" value="{{ i.id }}"> {{ i.name }}
+                                        </label><br>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+
+                                {% comment %} <div class="shopping-option-item">
+                                    <h4>Price</h4>
+                                    <ul class="sidebar-list">
+                                        <li><a href="#">$0.00 - $9.99 (2)</a></li>
+                                        <li><a href="#">$10.00 - $19.99 (3)</a></li>
+                                        <li><a href="#">$20.00 - $29.99 (5)</a></li>
+                                        <li><a href="#">$30.00 - $39.99 (2)</a></li>
+                                        <li><a href="#">$40.00 - $49.99 (10)</a></li>
+                                        <li><a href="#">$50.00 - $59.99 (12)</a></li>
+                                    </ul>
+                                </div> {% endcomment %}
+                            </form>
+                            </div>
+                        
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            <!-- Sidebar Area End -->
+
+            <!-- Shop Page Content Start -->
+            <div class="col-lg-9 order-first order-lg-last">
+                <div class="shop-page-content-wrap">
+                    <div class="products-settings-option d-block d-md-flex">
+                        <div class="product-cong-left d-flex align-items-center">
+                            <ul class="product-view d-flex align-items-center">
+                                <li class="current column-gird"><i class="fa fa-bars fa-rotate-90"></i></li>
+                                <li class="box-gird"><i class="fa fa-th"></i></li>
+                                <li class="list"><i class="fa fa-list-ul"></i></li>
+                            </ul>
+                            <span class="show-items">Items 1 - 9 of 17</span>
+                        </div>
+
+                        <div class="product-sort_by d-flex align-items-center mt-3 mt-md-0">
+                            <label for="sort">Sort By:</label>
+                            <select name="sort" id="sort">
+                                <option value="Position">Relevance</option>
+                                <option value="Name Ascen">Name, A to Z</option>
+                                <option value="Name Decen">Name, Z to A</option>
+                                <option value="Price Ascen">Price low to high</option>
+                                <option value="Price Decen">Price high to low</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="shop-page-products-wrap">
+                        <div class="products-wrapper">
+                            {% for message in messages %}
+                                <p style="color:red;">
+                                    {{message}}
+                                </p>
+                                {% endfor %}
+                            <div class="row">
+
+                                {% for i in prod %}
+                                <div class="col-lg-4 col-sm-6">
+                                    
+                                    <!-- Single Product Item -->
+                                    <div class="single-product-item text-center">
+                                        <figure class="product-thumb">
+                                            <a href="{{i.get_absolute_url}}">
+                                    <img src="{{i.product_image.url}}" alt="Products" class="img-fluid" style="height: 200px;">
+                                  </a>
+                                        </figure>
+
+                                        <div class="product-details">
+                                            <h2><a href="{{i.get_absolute_url}}">{{i.product_name}}</a></h2>
+                                            <div class="rating">
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star-half"></i>
+                                                <i class="fa fa-star-o"></i>
+                                            </div>
+                                            <span class="price">{{i.price}}</span>
+                                            <p class="products-desc">{{i.product_information}}</p>
+                                            <a class="btn btn-add-to-cart addToCartBtn" data-product-id="{{ i.id }}" >+ Add to Cart</a>
+                                            {% comment %} <button data-product-id="{{ product.id }}" class="btn btn-dark btn-sm btn-block h-100 d-flex align-items-center justify-content-center px-0 addToCartBtn">Add to cart</button> {% endcomment %}
+
+                                            <a class="btn btn-add-to-cart btn-whislist" data-product-id="{{ i.id }}">+ Add to
+                                                Wishlist</a>
+                                            <a href="single-product.html" class="btn btn-add-to-cart btn-compare">+
+                                                Compare</a>
+                                        </div>
+
+                                        <div class="product-meta">
+                                            <button type="button" data-toggle="modal" data-target="#quickView">
+                                    <span data-toggle="tooltip" data-placement="left" title="Quick View"><i
+                                            class="fa fa-compress"></i></span>
+                                            </button>
+                                            <a class=" btn-whislist" data-toggle="tooltip" data-placement="left"
+                                               title="Add to Wishlist"><i
+                                                    class="fa fa-heart-o"></i></a>
+                                            <a href="#" data-toggle="tooltip" data-placement="left" title="Compare"><i
+                                                    class="fa fa-tags"></i></a>
+                                        </div>
+                                        <span class="product-bedge">New</span>
+                                    </div>
+                                    <!-- Single Product Item -->
+                                    
+                                </div>{% endfor %}
+
+                                
+
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="products-settings-option d-block d-md-flex">
+                        <nav class="page-pagination">
+                            <ul class="pagination">
+                                <li><a href="#" aria-label="Previous">&laquo;</a></li>
+                                <li><a class="current" href="#">1</a></li>
+                                <li><a href="#">2</a></li>
+                                <li><a href="#">3</a></li>
+                                <li><a href="#" aria-label="Next">&raquo;</a></li>
+                            </ul>
+                        </nav>
+
+                        <div class="product-per-page d-flex align-items-center mt-3 mt-md-0">
+                            <label for="show-per-page">Show Per Page</label>
+                            <select name="sort" id="show-per-page">
+                                <option value="9">9</option>
+                                <option value="15">15</option>
+                                <option value="21">21</option>
+                                <option value="6">27</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Shop Page Content End -->
+        </div>
+    </div>
+</div>
+{% comment %} {% endblock %}
+
+{% block script %} {% endcomment %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    const checkboxForm = document.getElementById('checkboxForm');
+    const checkboxes = checkboxForm.querySelectorAll('input[type="checkbox"]');
+    
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateURL);
+    });
+
+    function updateURL() {
+        const selectedCheckboxes = Array.from(checkboxes)
+            .filter(checkbox => checkbox.checked)
+            .map(checkbox => `${checkbox.name}=${encodeURIComponent(checkbox.value)}`);
+
+        if (selectedCheckboxes.length > 0) {
+            const queryString = selectedCheckboxes.join('&');
+            const newURL = `${window.location.pathname}?${queryString}`;
+            window.history.pushState(null, null, newURL);
+        } else {
+            // If no checkboxes are selected, you can redirect to the original URL
+            const originalURL = `${window.location.pathname}`;
+            window.history.pushState(null, null, originalURL);
+        }
+        setTimeout(() => {
+            location.reload();
+        }, 1000);
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        // Select the <select> element by its id
+        var selectElement = $("#sort");
+
+        // Add a change event listener to the <select> element
+        selectElement.on("change", function () {
+            // Get the selected value
+            var selectedValue = selectElement.val();
+
+            // Construct the URL with the selected value
+            var url = "/shop/?sort=" + selectedValue;
+
+            // Redirect to the constructed URL
+            window.location.href = url;
+        });
+    });
+</script>
+
+
+
+
+
+
+{% endblock %}

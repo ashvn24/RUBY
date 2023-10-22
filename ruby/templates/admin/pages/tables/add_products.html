@@ -1,0 +1,113 @@
+{% extends 'adminbase.html' %}
+{% block content%}
+
+
+<div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Product Details</h4>
+        
+        
+        <form class="form-sample" method="POST" action="{% url 'add_product'%}" enctype="multipart/form-data">
+          {% csrf_token %}
+          <p class="card-description"> Product info </p>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Product Name</label>
+                <div class="col-sm-9">
+                  <input name="product_name" type="text"  class="form-control" id="exampleInputUsername2" >
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Price</label>
+                <div class="col-sm-9">
+                  <input type="text" name="price"  class="form-control" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Quantity</label>
+                    <div class="col-sm-9">
+                      <input type="text" name="quantity" class="form-control" />
+                    </div>
+                  </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    {% comment %} <input class="form-control" name="product_image" type="file" id="formFile"> {% endcomment %}
+                    <input type="file" id="featured_image" name="product_image" accept="image/*" required>
+                  </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Category</label>
+                <div class="col-sm-9">
+                    
+                  <select class="form-control" name="categories">
+                    {% for i in cat %}
+                    {% for j in i.category_set.all%}
+                    {% for k in j.sub_category_set.all %}
+                    <option value="{{ k.id }}">{{i.name}}--{{ j.name }}--{{k.name}}</option>
+                    {% endfor %}
+                    {% endfor %}
+                    {% endfor %}
+                    
+                  </select>
+                  
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Section</label>
+                    <div class="col-sm-9">
+                      <select class="form-control" name="section">
+                        {% for i in sec %}
+                        <option value="{{i.id}}">{{i.name}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+            </div>
+            <div class="form-group">
+                <label for="exampleTextarea1">Information</label>
+                <textarea class="form-control" name="product_information" id="exampleTextarea1" rows="3"></textarea>
+              </div>
+          </div>
+          <p class="card-description"> Product Images </p>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <div class="mb-3">
+                    <label for="formFileMultiple" class="form-label">Product images</label>
+                    <input class="form-control" name="images" type="file" id="formFileMultiple" multiple>
+                  </div>
+              </div>
+            </div>
+            
+          </div>
+          <p class="card-description"> Product Description </p>
+          <div class="row">
+            <div class="form-group">
+                <label for="exampleTextarea1">Description</label>
+                <textarea class="form-control" name="add_description" id="exampleTextarea1" rows="4"></textarea>
+              </div>
+            
+          </div>
+          <button type="submit" class="btn btn-gradient-primary me-2">Submit</button>
+
+        </form>
+        {% comment %} {% endfor %} {% endcomment %}
+      </div>
+    </div>
+
+{% endblock %}
+
