@@ -38,7 +38,7 @@
                                                 </div>
                                             </div>
 
-                                            <a href="#" class="forget-pwd">Forget Password?</a>
+                                            {% comment %} <a href="#" class="forget-pwd">Forget Password?</a> {% endcomment %}
                                         </div>
                                     </div>
                                     
@@ -85,7 +85,7 @@
                 </div>
                 <div>
                     {% for message in messages %}
-                    <p class="abc"> {{message}} </p>
+                    <p style="color:red;"> {{message}} </p>
                     {% endfor %}
                   </div>
                 <!-- Login & Register Content End -->

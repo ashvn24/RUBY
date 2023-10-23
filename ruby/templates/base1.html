@@ -71,6 +71,7 @@
     .text-success {
         color: green;
     }
+    {% block style %}{% endblock style %}
 
     </style>
 <body>
@@ -171,48 +172,6 @@ myModal.addEventListener('shown.bs.modal', () => {
 
 {% comment %} ----------------------------------------Wishlist-------------------------------------- {% endcomment %}
 
-{% comment %} <script>
-    
-    
-      $(document).on('click', ".btn-whislist", function(){
-      
-          var _vm = $(this).closest('.product_wish');
-          
-        
-          var _productId = $(this).data('product-id'); // Get product ID from data attribute
-      
-          console.log( _productId);
-      
-         //ajax
-         $.ajax({
-          url: '/addwish/',
-          data: {
-              'id': _productId,
-             
-          },
-          dataType: 'json',
-          beforeSend: function(){
-              _vm.attr('disabled', true);
-          },
-          success: function(response) {
-              
-            
-              $('#cart-count').text(response.totallist);
-             
-          },
-          error: function(error) {
-              console.log('Error:', error);
-              $('#customAlertMessage').text('Product added to wishlist!');
-              $('#customAlertModal').modal('show');
-              setTimeout(function () {
-                $('#customAlertModal').modal('hide');
-            }, 1500);
-          }
-         });
-      });
-      
-  
-</script>  {% endcomment %}
 
 <script>
     $(document).on('click', ".btn-whislist", function () {

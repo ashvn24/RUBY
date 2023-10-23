@@ -19,10 +19,50 @@
             <div>
                 {% if i.status == 'cancelled' %}
                 <label style="color:red">Order cancelled</label>
+                {% elif i.status == 'refunded' %}
+                <label style="color:red">Refunded</label>
                 {% elif i.status == 'delivered' or i.status == 'completed' %}
-                <a href="{% url 'cancel' i.id %}"><button type="button" class="btn btn-danger btn-lg">Return</button></a>
+                <button type="button" class="btn btn-danger btn-lg" data-toggle="modal" data-target="#returnConfirmationModal">Return</button>
+                <div class="modal fade" id="returnConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="returnConfirmationModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="returnConfirmationModalLabel">Confirm Action</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure you want to return?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <a href="{% url 'cancel' i.id %}" class="btn btn-danger">Confirm</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 {% else %}
-                <a href="{% url 'cancel' i.id %}"><button type="button" class="btn btn-danger btn-lg">Cancel</button></a>
+                <button type="button" class="btn btn-danger btn-lg" data-toggle="modal" data-target="#confirmationModal">Cancel</button>
+                <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="confirmationModalLabel">Confirm Action</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure you want to cancel?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <a href="{% url 'cancel' i.id %}" class="btn btn-danger">Confirm</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 {% endif %}
                 
             </div>
@@ -38,8 +78,12 @@
             <div class="order-summary">
                 <h3>Order Summary</h3>
                 <p>Subtotal:<strong> {{total_price}}</strong></p>
-                <p>Shipping:<strong>+ 150</strong></p>
-                <p>Discount:<strong> - {{i.coupon}}</strong></p>
+                <p>Shipping:<strong> + 150</strong></p>
+                {% if i.coupon %}
+                <p>Discount: <strong> - {{ i.coupon }}</strong></p>
+                {% else %}
+                <p>No discount available</p>
+                {% endif %}                
                 <p>Total Amount: <strong>{{i.amount}}</strong></p>
                 <p>Payment Method: <strong>{{i.payment_type}}</p>
                 <p style="color:blue;">Status: {{i.status}}</strong></p>

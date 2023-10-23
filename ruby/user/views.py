@@ -19,6 +19,7 @@ from django.db.models.functions import ExtractMonth, ExtractYear
 from django.db.models import F,Q
 from django.db.models import ExpressionWrapper, FloatField
 from datetime import datetime
+import time    
 import openpyxl
 from openpyxl.styles import Alignment
 from django.http import HttpResponse
@@ -45,10 +46,12 @@ def register(request):
         email = request.POST['email']
         password = request.POST['password1']
         full_name = request.POST.get('full_name', '')
-        password2=request.POST.get('password2')
-        if not email or not full_name or not password2 or not password2:
+        password2 = request.POST.get('password2')
+        
+        if not email or not full_name or not password or not password2:
             messages.error(request, 'Please input all the details to register')
             return redirect('login')
+        
         if password != password2:
             messages.error(request, 'Passwords do not match.')
             return redirect('login')
@@ -56,10 +59,12 @@ def register(request):
         if not validate_email(email):
             messages.error(request, 'Please enter a valid email address.')
             return redirect('login')
+        
         if CustomUser.objects.filter(email=email).exists():
             messages.error(request, 'Email already taken.')
             return redirect('login')
-        message = generate_otp()
+        
+        otp, expiration_time = generate_otp()  # Generate OTP and expiration time
         sender_email = "ashwinvk77@gmail.com"
         receiver_mail = email
         password = "ktsg khti mimn zphi"
@@ -68,23 +73,28 @@ def register(request):
             with smtplib.SMTP("smtp.gmail.com", 587) as server:
                 server.starttls()
                 server.login(sender_email, password)
-                server.sendmail(sender_email, receiver_mail, message)
+                server.sendmail(sender_email, receiver_mail, otp)
         except smtplib.SMTPAuthenticationError:
             messages.error(request, 'Failed to send OTP email. Please check your email configuration.')
             return redirect('login')
+        
         user = CustomUser.objects.create_user(email=email, password=password, full_name=full_name)
         user.save()
         
-        request.session['email'] =  email
-        request.session['otp']   =  message
-        messages.success (request, 'OTP is sent to your email')
+        request.session['email'] = email
+        request.session['otp'] = otp
+        request.session['otp_expiration_time'] = expiration_time  # Store expiration time in session
+        messages.success(request, 'OTP is sent to your email')
         return redirect('verify_signup')
     
     return render(request, 'loginpage.html')
                 
 
-def generate_otp(length = 6):
-    return ''.join(secrets.choice("0123456789") for i in range(length)) 
+def generate_otp(length=6, expiry_time=60):
+    current_time = int(time.time())
+    expiration_time = current_time + expiry_time
+    otp = ''.join(secrets.choice("0123456789") for i in range(length))
+    return otp, expiration_time
         
         
 def validate_email(email):
@@ -94,28 +104,37 @@ def validate_email(email):
 @never_cache
 def verify_signup(request):
     if request.method == "POST":
+        user = CustomUser.objects.get(email=request.session['email'])
+        x = request.session.get('otp')
+        otp = request.POST['otp']
+        otp_expiration_time = request.session.get('otp_expiration_time')
         
-        user      =  CustomUser.objects.get(email=request.session['email'])
-        x         =  request.session.get('otp')
-        OTP       =  request.POST['otp']
-        if OTP == x:
+        if int(time.time()) <= otp_expiration_time:
+            if otp == x:
                 user.is_verified = True
                 user.save()
-                del request.session['email'] 
+                del request.session['email']
                 del request.session['otp']
-                auth.login(request,user)
+                del request.session['otp_expiration_time']
+                auth.login(request, user)
                 messages.success(request, "Signup successful!")
                 device_id = request.COOKIES.get('device_id')
-            
                 response = redirect('index')
                 response.delete_cookie('device_id')
                 return response
+            else:
+                user.delete()
+                messages.info(request, "Invalid OTP")
+                del request.session['email']
+                return redirect('login')
         else:
             user.delete()
-            messages.info(request,"invalid otp")
+            messages.info(request, "OTP has expired")
+            print("OTP has expired")
             del request.session['email']
             return redirect('login')
-    return render(request,'main/verify_otp.html')
+    
+    return render(request, 'main/verify_otp.html')
 
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 @never_cache
@@ -170,7 +189,7 @@ def logoutPage(request):
             
         
     logout(request)
-    return redirect('index')
+    return redirect('login')
 
 @user_passes_test(lambda u: u.is_staff, login_url='login')
 @login_required(login_url='login')
@@ -333,33 +352,6 @@ def edit_user(request,id):
     
     return render(request,'admin/pages/tables/edit_user.html',context)
 
-# def update_user(request,id):
-#     users = CustomUser.objects.get(id=id)
-#     if request.method == "POST":
-    
-#         full_name=request.POST.get('full_name')
-#         first_name=request.POST.get('first_name')
-#         last_name=request.POST.get('last_name')
-#         email=request.POST.get('email')
-#         ph_no=request.POST.get('ph_no')
-#         users.full_name=full_name
-#         users.first_name=first_name
-#         users.last_name=last_name
-#         users.email=email
-#         users.ph_no=ph_no
-#         users.save()    
-#         return redirect("admin_users")
-#     else:
-#         context={
-#             'users':users
-#         }
-#         return render(request,'admin/pages/tables/edit_user.html',context)
-    
-    
-# def delete_user(request,id):
-#     user=CustomUser.objects.get(id=id)
-#     user.delete()
-#     return redirect('admin_users')
 
 def block_user(request,id):
     user=CustomUser.objects.get(id=id)
@@ -374,17 +366,6 @@ def unblock_user(request,id):
     user.is_active=True
     user.save()
     return redirect('admin_users')
-
-# def add_user(request):
-#     if request.method=='POST' :
-#         full_name=request.POST.get('full_name')
-#         first_name=request.POST.get('first_name')
-#         last_name=request.POST.get('last_name')
-#         email=request.POST.get('email')
-#         ph_no=request.POST.get('ph_no')
-#         user = CustomUser.objects.create_user(email=email, first_name=first_name,last_name=last_name,ph_no=ph_no, full_name=full_name)
-#         return redirect('admin_users')
-#     return render(request,'admin/pages/tables/add_user.html')
 
 
 @user_passes_test(lambda u: u.is_staff, login_url='login')
@@ -468,7 +449,6 @@ def update_category(request,id):
     else:
         return render(request,'admin/pages/tables/edit_category.html',{'categ':categ})
         
-    
 
 
 def edit_subcategory(request,id):
@@ -557,9 +537,7 @@ def add_product(request):
             product_image=product_image,
         )
 
-        # Handle product images (assuming multiple images are uploaded)
-        # for image_file in request.FILES.getlist('images'):
-        #     product_images.objects.create(product=new_product, images=image_file)
+        
         for image in images:
             product_images.objects.create(product=new_product,images=image)
 

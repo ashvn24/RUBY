@@ -1,6 +1,69 @@
 {% extends "base1.html" %}
 {% load cart_tag %}
 {% load static %}
+{% block style %}
+.modal-header {
+    background-color: #9b1d1de0; /* Change to your preferred header color */
+    color: #fff;
+    border-radius: 14px 14px 0 0;
+}
+
+/* Style the modal title */
+.modal-title {
+    font-size: 24px;
+}
+
+/* Style the close button in the modal header */
+.modal-header .close {
+    color: #fff;
+}
+
+/* Style the modal content */
+.modal-content {
+    border-radius: 15px; /* Add border radius to the modal content */
+}
+
+/* Style the modal body (form) */
+.modal-body {
+    padding: 20px;
+}
+
+/* Style the form input fields */
+.modal-body input,
+.modal-body select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Center the "Add Address" button horizontally and add border radius */
+.modal-body .btn-login {
+    background-color: #007BFF; /* Change to your preferred button color */
+    color: #fff;
+    border: none;
+    width: 100%; /* Make the button full width */
+    border-radius: 5px; /* Add border radius to the button */
+}
+
+/* Style the Add Address button on hover */
+.modal-body .btn-login:hover {
+    background-color: #0056b3; /* Change to a darker shade for hover effect */
+}
+
+/* Adjust the modal size if needed */
+.modal-dialog {
+    border-radius: 15px;
+    max-width: 600px; /* Adjust to your preferred width */
+}
+
+/* Center the modal vertically */
+.modal.vertical-center {
+    display: flex;
+    align-items: center;
+}
+{% endblock style %}
 {% block content %}
 
 
@@ -72,88 +135,99 @@
                     <div class="billing-form-wrap">
                         <form action="{% url 'add_addrs' %}" method="post">
                             {% csrf_token %}
-
+                    
                             <div class="checkout-box-wrap">
                                 <div class="single-input-item">
                                     <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" id="ship_to_different">
-                                        <label class="custom-control-label" for="ship_to_different">Ship to a different
-                                            address?</label>
+                                        <input type="checkbox" class="custom-control-input" id="ship_to_different" data-toggle="modal" data-target="#addressModal">
+                                        <label class="custom-control-label" for="ship_to_different">Ship to a different address?</label>
                                     </div>
-                                </div>
-                                <div class="ship-to-different single-form-row">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="single-input-item">
-                                                <label for="f_name_2" class="required">First Name</label>
-                                                <input type="text" id="f_name_2" name="adfirst_name" placeholder="First Name"/>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="single-input-item">
-                                                <label for="l_name_2" class="required">Last Name</label>
-                                                <input type="text" id="l_name_2" name="adlast_name" placeholder="Last Name"/>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="single-input-item">
-                                        <label for="email_2" class="required">Email Address</label>
-                                        <input type="email" id="email_2" name="ademail" placeholder="Email Address"/>
-                                    </div>
-                                    <div class="single-input-item">
-                                        <label for="phn" class="required">Phone No.</label>
-                                        <input type="text" id="phn" name="adph_no" placeholder="Email Address"/>
-                                    </div>
-
-                                    
-
-                                    <div class="single-input-item">
-                                        <label for="country_2" class="required">Country</label>
-                                        <select  id="country_2" name="adcountry">
-                                            
-                                            <option value="India">India</option>
-                                            <option value="Bangladesh">Bangladesh</option>
-                                            <option value="Pakistan">Pakistan</option>
-                                            <option value="England">England</option>
-                                            <option value="London">London</option>
-                                            <option value="London">London</option>
-                                            <option value="Chaina">Chaina</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="single-input-item">
-                                        <label for="street-address_2" class="required">Street address</label>
-                                        <input type="text" id="street-address_2" name="adaddressline1" placeholder="Street address Line"/>
-                                    </div>
-
-                                    
-
-                                    <div class="single-input-item">
-                                        <label for="town_2" class="required">Town / City</label>
-                                        <input type="text" id="town_2" name="adcity" placeholder="Town / City"/>
-                                    </div>
-
-                                    <div class="single-input-item">
-                                        <label for="state_2">State / Divition</label>
-                                        <input type="text" id="state_2" name="adstate" placeholder="State / Divition"/>
-                                    </div>
-                                    <input type="text" value="checkout" name="check" hidden>
-
-                                    <div class="single-input-item">
-                                        <label for="postcode_2" class="required">Postcode / ZIP</label>
-                                        <input type="text" id="postcode_2" name="adpin" placeholder="Postcode / ZIP"/>
-                                    </div>
-                                    <div class="single-input-item">
-                                        <button class="btn-login btn-add-to-cart">Add Address</button>
-                                    </div>
-                                    
                                 </div>
                             </div>
-                            
                         </form>
                     </div>
+                    
+                    <!-- Bootstrap Modal for the form -->
+                    <div class="modal fade" id="addressModal" tabindex="-1" role="dialog" aria-labelledby="addressModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="addressModalLabel">Add Address</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="address-form" action="{% url 'add_addrs' %}" method="post">
+                                        {% csrf_token %}
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="single-input-item">
+                                                    <label for="adfirst_name" class="required">Full Name</label>
+                                                    <input type="text" id="adfirst_name" name="adfirst_name" placeholder="Full Name"  />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="single-input-item">
+                                                    <label for="ademail" class="required">Email Address</label>
+                                                    <input type="email" id="ademail" name="ademail" placeholder="Email Address"  />
+                                                </div>
+                                            </div>
+                                    
+                                            <div class="col-lg-6">
+                                                <div class="single-input-item">
+                                                    <label for="adph_no" class="required">Phone No.</label>
+                                                    <input type="text" id="adph_no" name="adph_no" placeholder="Phone Number"  />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    
+                                        <div class="single-input-item">
+                                            <label for="adaddressline1" class="required">Address</label>
+                                            <textarea id="adaddressline1" name="adaddressline1" placeholder="Address" ></textarea>
+                                        </div>
+                                    
+                                        <div class="row">
+                                            <div class="col-lg-3">
+                                                <div class="single-input-item">
+                                                    <label for="adcountry" class="required">Country</label>
+                                                    <input type="text" id="adcountry" name="adcountry" placeholder="Country" required />
+                                                </div>
+                                            </div>
+                                    
+                                            <div class="col-lg-3">
+                                                <div class="single-input-item">
+                                                    <label for="adstate" class="required">State</label>
+                                                    <input type="text" id="adstate" name="adstate" placeholder="State" required />
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="single-input-item">
+                                                    <label for "adcity" class="required">City</label>
+                                                    <input type="text" id="adcity" name="adcity" placeholder="City" required />
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="single-input-item">
+                                                    <label for="adpin" class="required">Pin</label>
+                                                    <input type="text" id="adpin" name="adpin" placeholder="Pin"  />
+                                                </div>
+                                                <input type="text" value="checkout" name="check" hidden>
+                                            </div>
+                                        </div>
+                                    
+                                        <div class="single-input-item">
+                                            <button class="btn-login btn-add-to-cart" id="submit-button">Save Changes</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                 </div>
             </div>
 
@@ -314,12 +388,12 @@
                             </div>
 
                             <div class="summary-footer-area">
-                                <div class="custom-control custom-checkbox">
+                                {% comment %} <div class="custom-control custom-checkbox">
                                     <input type="checkbox" class="custom-control-input" id="terms" required/>
                                     <label class="custom-control-label" for="terms">I have read and agree to the website
                                         <a
                                                 href="index.html">terms and conditions.</a></label>
-                                </div>
+                                </div> {% endcomment %}
 
                                 
                                 <button id="placeOrderButton" type="submit" class="btn-add-to-cart">Place Order</button>
@@ -396,7 +470,7 @@ var options = {
            
             var totalAmount;
 
-                if ({{ cart_total_amount }} < 500) {
+                if ({{ cart_total_amount }} <sc 500) {
                     totalAmount = {{ cart_total_amount }};
                 } else if ({{ cart_total_amount }} > 500) {
                     if (couponDiscount) { // Check if couponDiscount has a value
@@ -455,12 +529,97 @@ var placeOrderButton = document.getElementById('placeOrderButton');
     } 
 }); 
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<scrip>
+    $(document).ready(function () {
+        $('#address-form').on('submit', function (e) {
+            e.preventDefault(); // Prevent the default form submission
+    
+            // Collect the form data
+            var formData = $(this).serialize();
+    
+            // Define the URL where you want to send the form data
+            var url = '{% url "add_addrs" %}';
+    
+            // Send an AJAX POST request
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                success: function (data) {
+                    // Handle the success response here if needed
+                    console.log('Form submitted successfully');
+                },
+                error: function (error) {
+                    // Handle any errors here if needed
+                    console.error('Form submission error', error);
+                }
+            });
+        });
+    });
+</script>
+
+</script>
 
 
+<script>
+    document.getElementById('address-form').addEventListener('submit', function (event) {
+        const name = document.getElementById('adfirst_name').value;
+        const email = document.getElementById('ademail').value;
+        const phone = document.getElementById('adph_no').value;
+        const address = document.getElementById('adaddressline1').value;
+        const country = document.getElementById('adcountry').value;
+        const state = document.getElementById('adstate').value;
+        const city = document.getElementById('adcity').value;
+        const pin = document.getElementById('adpin').value;
 
-</script> 
+        let isValid = true;
+
+        if (name.trim().length <= 3 || /\d/.test(name)) {
+            alert('Full Name should have more than 3 characters and should not contain numbers.');
+            isValid = false;
+        }
+
+        if (email.trim() === '' || !validateEmail(email)) {
+            alert('Please enter a valid email address.');
+            isValid = false;
+        }
+
+        if (phone.trim() === '' || !validatePhoneNumber(phone)) {
+            alert('Phone number should have 10 digits and no other characters.');
+            isValid = false;
+        }
+
+        if (address.trim().length <= 5) {
+            alert('Address should have more than 5 characters.');
+            isValid = false;
+        }
 
 
+        if (!validatePinCode(pin)) {
+            alert('Pin code should have 6 digits and no other characters.');
+            isValid = false;
+        }
+
+        if (!isValid) {
+            event.preventDefault(); // Prevent the form from submitting
+        }
+    });
+
+    function validateEmail(email) {
+        const emailRegex = /^[a-zA-Z0-9._-]+@gmail\.com$/;
+        return emailRegex.test(email);
+    }
+
+    function validatePhoneNumber(phone) {
+        return /^[0-9]{10}$/.test(phone);
+    }
+
+    function validatePinCode(pin) {
+        // Check if it's a positive number with exactly 6 digits
+        return /^[0-9]{6}$/.test(pin);
+    }
+</script>
 
 
 

@@ -41,7 +41,8 @@ def shop(request):
     sub=sub_category.objects.values('name').distinct()
 
     cat=category.objects.values('name').distinct()
-    
+    wish= wishlist.objects.filter(user=request.user).values('product')
+    print(wish)
     
     gender = request.GET.get('gender', None)
     type=request.GET.get('material', None)
@@ -87,7 +88,7 @@ def shop(request):
         'prod':prod,
         'sub':sub,
         'cat':cat,
-        
+        'wish':wish,
         
     }
     
@@ -211,6 +212,7 @@ def edit_addrs(request,id):
 
 @login_required(login_url='login')
 def add_adrs(request):
+    print('---------------------------------------------here')
     maincategory=main_category.objects.all().order_by('id')
     if request.method=="POST":
         fname=request.POST.get('adfirst_name')
@@ -333,6 +335,8 @@ def cart_detail(request):
 @csrf_exempt
 def checkout(request):
     cart_item = request.session.get(settings.CART_SESSION_ID, {})
+    if not cart_item:
+        print('no items')
     
       
     maincategory=main_category.objects.all().order_by('id')
@@ -360,6 +364,10 @@ def checkout(request):
             total_price = total_price - (total_price * discount / 100)
             
     client = razorpay.Client(auth=(settings.RAZORPAY_API_KEY, settings.RAZORPAY_API_SECRET))
+    if not total_price:
+        total_price=1
+        
+    
     payment=client.order.create(
         {
             "amount": total_price * 100,
@@ -595,7 +603,7 @@ def cancel(request,id):
         status='Credited',
         )
         wallet.save()
-        OrderItem.status='cancelled'
+        OrderItem.status='refunded'
         OrderItem.save()
         Order_item_amount = Decimal(OrderItem.amount)
         usercustm.wallet_bal+=Order_item_amount
@@ -609,7 +617,7 @@ def cancel(request,id):
         )
         wallet.save()
         
-        OrderItem.status='cancelled'
+        OrderItem.status='refunded'
         OrderItem.save()
         Order_item_amount = Decimal(OrderItem.amount)
         usercustm.wallet_bal+=Order_item_amount
