@@ -330,12 +330,12 @@
     }
 
     function validatePhoneNumber(phone) {
-        return /^\d{10}$/.test(phone);
+        return /^[0-9]{10}$/.test(phone);
     }
 
     function validatePinCode(pin) {
         // Check if it's a positive number with exactly 6 digits
-        return /^\d{6}$/.test(pin);
+        return /^[0-9]{6}$/.test(pin);
     }
 </script>
 

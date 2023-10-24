@@ -20,34 +20,34 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <form action="{% url 'add_coupon'%}" method='post'>
+            <form action="{% url 'add_coupon'%}" method='post'id="copounform">
                 {% csrf_token %}
                 <fieldset >
                   
                   <div class="mb-3">
                     <label  class="form-label">Code</label>
-                    <input type="text" name="coupon-code" id="disabledTextInput" class="form-control" placeholder="enter CODE">
+                    <input type="text" name="coupon-code" id="code" class="form-control" placeholder="enter CODE">
                   </div>
                   <div class="mb-3">
                     <label  class="form-label">Discount</label>
-                    <input type="text" name="discount" id="disabledTextInput" class="form-control" placeholder="enter Discount">
+                    <input type="text" name="discount" id="discount" class="form-control" placeholder="enter Discount">
                   </div>
                   <div class="mb-3">
                     <label class="form-label">Start Date</label>
-                    <input type="date" name="start" id="disabledDateInput" class="form-control" placeholder="Date">
-                </div>
-                  <div class="mb-3">
-                    <label class="form-label">End Date</label>
-                    <input type="date" name="end" id="disabledDateInput" class="form-control" placeholder="Date">
-                </div>
+                    <input type="date" name="start" id="start" class="form-control" placeholder="Date">
+                  </div>
+                    <div class="mb-3">
+                      <label class="form-label">End Date</label>
+                      <input type="date" name="end" id="end" class="form-control" placeholder="Date">
+                  </div>
 
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="submit" class=" submit btn btn-primary">Add</button>
-        </div>
-    </fieldset>
-</form>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" id="submit-button" class=" submit btn btn-primary">Add</button>
+                  </div>
+                </fieldset>
+              </form>
       </div>
     </div>
   </div>
@@ -109,3 +109,29 @@
 
 
 {% endblock %}
+
+{% block script %}
+<script>
+document.getElementById('copounform').addEventListener('submit', function (event) {
+  const coupon = document.getElementById('coupon').value;
+  const discount = document.getElementById('discount').value;
+  const start = document.getElementById('start').value;
+  const end = document.getElementById('end').value;
+
+  const nonEmptyNumeric = /^[0-9]+$/;
+
+  let isValid = true;
+
+  if (coupon.trim() === '' ||
+      discount.trim() === '' ||
+      start.trim() === '' ||
+      end.trim() === ''){
+        alert('Please fill in all fields before submitting the form.');
+        isValid = false;
+      }
+  if (!isValid) {
+      event.preventDefault(); // Prevent the form from being submitted
+    }
+});
+</script>
+{% endblock script %}

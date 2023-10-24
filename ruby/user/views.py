@@ -556,6 +556,12 @@ def delete_product(request,id):
     prd.save()
     return redirect('products')
 
+def undo_delete_product(request,id):
+    prd=product.objects.get(id=id)
+    prd.is_deleted=False
+    prd.save()
+    return redirect('products')
+
 def view_more(request,id):
     cat=main_category.objects.all()
     sec=section.objects.all()
@@ -576,7 +582,8 @@ def update_product(request,id):
         pro.stock = request.POST['quantity']
         pro.product_name = request.POST['product_name']
         pro.price = request.POST['price']
-        pro.product_image = request.FILES['product_image']
+        if 'product_image' in request.FILES:
+            pro.product_image = request.FILES['product_image']
         category_id = request.POST['categories']
         print(category_id)
         section_id = request.POST['section']
@@ -587,10 +594,11 @@ def update_product(request,id):
         pro.categories=c
         pro.section=s
         pro.save()
-        for img in images:
-            product_image = product_images(product=pro)
-            product_image.images = img
-            product_image.save()
+        if images:
+            for img in images:
+                product_image = product_images(product=pro)
+                product_image.images = img
+                product_image.save()
          
         return redirect('products')
     else:
@@ -599,7 +607,7 @@ def update_product(request,id):
             'cat': cat,
             'sec': sec
         }
-    return render(request, 'admin/pages/tables/edit_product.html.html', context)
+    return render(request, 'admin/pages/tables/view_more.html', context)
 
 
 

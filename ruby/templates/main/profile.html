@@ -277,7 +277,7 @@
 
     function validatePhoneNumber(phone) {
         // Regular expression for a 10-digit phone number
-        const phoneRegex = /^\d{10}$/;
+        const phoneRegex = /^[0-9]{10}$/;
         return phoneRegex.test(phone);
     }
 </script>

@@ -33,10 +33,10 @@
               <td><a href="/user/edit_products/{{i.id}}"><button type="button" class="btn btn-link btn-sm">View</button></a>
               </td>
               <td>
-                {% if is_deleted %}
-                <a href="/user/delete_product/{{i.id}}"><button type="button" class="btn btn-gradient-danger btn-sm">List</button></a>
+                {% if i.is_deleted %}
+                <a href="{% url 'undo_delete_product' i.id %}"><button type="button" class="btn btn-gradient-success btn-sm">List</button></a>
                 {% else %}
-                <a href="/user/delete_product/{{i.id}}"><button type="button" class="btn btn-gradient-danger btn-sm">Un List</button></a>
+                <a href="{% url 'delete_product' i.id %}"><button type="button" class="btn btn-gradient-danger btn-sm">Un List</button></a>
                 {% endif %}
               </td>
             </tr>
