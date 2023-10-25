@@ -120,7 +120,7 @@ def Profile(request):
     maincategory=main_category.objects.all().order_by('id')
     user=request.user
     cstmuser=CustomUser.objects.get(email=user)
-    addrs=Address.objects.filter(user=user)
+    addrs=Address.objects.filter(user=user,is_deleted=False)
     orders = Order.objects.filter(user=request.user).order_by('-id')
     
     
@@ -255,7 +255,8 @@ def add_adrs(request):
 @login_required(login_url='login')
 def delete_adrs(request,id):
     addr = Address.objects.get(id=id)
-    addr.delete()
+    addr.is_deleted=True
+    addr.save()
     return redirect('profile')
 
 
@@ -381,7 +382,7 @@ def checkout(request):
     
     cart=request.session.get('cart')
     user=request.user
-    addrs=Address.objects.filter(user=user)
+    addrs=Address.objects.filter(user=user,is_deleted=False)
     context={
         'maincategory':maincategory,
         'cart':cart,
@@ -596,6 +597,9 @@ def cancel(request,id):
     user=request.user
     usercustm=CustomUser.objects.get(email=user)
     OrderItem=Order.objects.get(id=id)
+    prod=product.objects.get(product_name=OrderItem.product)
+    prod.stock+=1
+    prod.save()
     if OrderItem.status == 'completed' and OrderItem.payment_type=='cash':
         wallet= Wallet.objects.create(
         user=user,
@@ -669,32 +673,3 @@ def invoice(request,id):
     return FileResponse(buf,as_attachment=True,filename='invoice.pdf')
 
 
-# def orders_by_week(request, year=2023, month=10):
-#     # Calculate the first and last days of the given month
-#     first_day = date(int(year), int(month), 1)
-#     last_day = (first_day + timedelta(days=31)).replace(day=1) - timedelta(days=1)
-
-#     orders_by_week = []
-#     current_week_start = first_day
-#     week_number = 1
-
-#     while current_week_start <= last_day:
-#         current_week_end = current_week_start + timedelta(days=6)
-
-#         # Count the number of orders for the current week
-#         week_orders_count = Order.objects.filter(date__range=(current_week_start, current_week_end)).count()
-
-#         # Append the week's orders count to the result list
-#         orders_by_week.append(week_orders_count)
-
-#         # Move to the next week
-#         current_week_start = current_week_end + timedelta(days=1)
-#         week_number += 1
-
-#         context = {
-#             'orders_by_week': orders_by_week,
-#         }
-#     return render(request,'admin/index1.html',context)
-    
-    
-        

@@ -2,10 +2,8 @@ from django.shortcuts import render, redirect
 # from .models import CustomUser
 from django.contrib import  auth,messages
 from shop.models import *
-from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
 from .models import CustomUser
-from django.core.validators import EmailValidator
 from shop.models import category,main_category,product,section,add_description,product_images,sub_category
 from django.views.decorators.cache import cache_control,never_cache
 from django.contrib.auth.decorators import login_required,user_passes_test
@@ -14,10 +12,8 @@ import secrets
 from django.conf import settings
 from cart.cart import Cart
 from decimal import Decimal
-from django.db.models import Sum
-from django.db.models.functions import ExtractMonth, ExtractYear
 from django.db.models import F,Q
-from django.db.models import ExpressionWrapper, FloatField
+from django.contrib import  messages
 from datetime import date, datetime, timedelta
 import time    
 import openpyxl
@@ -689,24 +685,35 @@ def update_order(request,id):
 @user_passes_test(lambda u: u.is_staff, login_url='login')
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def coupons(request):
-    
     coupons=coupon.objects.all()
+    today = timezone.now().date()
+    for cpn in coupons:
+        if cpn.end_date <= today:
+            cpn.is_active = False
+            cpn.save()        
     return render(request,'admin/pages/tables/coupon.html',{'coupons':coupons})
 
 def add_coupons(request):
-    if request.method=='POST':
-        code=request.POST['coupon-code']
-        discount=request.POST['discount']
-        start=request.POST['start']
-        end=request.POST['end']
-        
-        code=coupon.objects.create(
+    if request.method == 'POST':
+        code = request.POST['coupon-code']
+        discount = request.POST['discount']
+        start = request.POST['start']
+        end = request.POST['end']
+
+        # Check if the coupon code already exists
+        existing_coupon = coupon.objects.filter(code=code).first()
+        if existing_coupon:
+            messages.error(request,"copoun code already exists")
+            return redirect('coupon')
+        # If the coupon code doesn't exist, create a new coupon
+        new_coupon = coupon(
             code=code,
             discount=discount,
             start_date=start,
             end_date=end
         )
-        code.save()
+        new_coupon.save()
+
         return redirect('coupon')
     
 def couponactivate(request, id):   

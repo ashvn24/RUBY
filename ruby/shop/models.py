@@ -148,6 +148,8 @@ class Order(models.Model):
     payment_id     =   models.CharField(max_length=100,null=True,blank=True)
     coupon         =   models.CharField(max_length=30,null=True,blank=True)
     paid           =   models.BooleanField(default=False,blank=True)
+    is_deleted     =   models.BooleanField(default=False,blank=True)
+           
     
     def __str__(self):
         return f"Order #{self.pk} - {self.user}"
