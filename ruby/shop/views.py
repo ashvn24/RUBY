@@ -1,3 +1,4 @@
+from datetime import date, timedelta
 from django.shortcuts import render,redirect
 from shop.models import *
 from user.models import CustomUser
@@ -667,6 +668,33 @@ def invoice(request,id):
         
     return FileResponse(buf,as_attachment=True,filename='invoice.pdf')
 
+
+# def orders_by_week(request, year=2023, month=10):
+#     # Calculate the first and last days of the given month
+#     first_day = date(int(year), int(month), 1)
+#     last_day = (first_day + timedelta(days=31)).replace(day=1) - timedelta(days=1)
+
+#     orders_by_week = []
+#     current_week_start = first_day
+#     week_number = 1
+
+#     while current_week_start <= last_day:
+#         current_week_end = current_week_start + timedelta(days=6)
+
+#         # Count the number of orders for the current week
+#         week_orders_count = Order.objects.filter(date__range=(current_week_start, current_week_end)).count()
+
+#         # Append the week's orders count to the result list
+#         orders_by_week.append(week_orders_count)
+
+#         # Move to the next week
+#         current_week_start = current_week_end + timedelta(days=1)
+#         week_number += 1
+
+#         context = {
+#             'orders_by_week': orders_by_week,
+#         }
+#     return render(request,'admin/index1.html',context)
     
     
         

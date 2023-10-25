@@ -48,7 +48,11 @@
     font-size: 16px;
     cursor: pointer;
 }
+
+
 </style>
+<script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+
 {% endblock card %}
 
 {% block content %}
@@ -103,49 +107,31 @@
           </div>
         </div>
       </div>
-      {% comment %} <div class="row">
-        <div class="col-md-7 grid-margin stretch-card">
-          <div class="card">
-            <div class="card-body">
-              <div class="clearfix">
-                <h4 class="card-title float-left">Visit And Sales Statistics</h4>
-                <div id="visit-sale-chart-legend" class="rounded-legend legend-horizontal legend-top-right float-right"></div>
-              </div>
-              <canvas id="visit-sale-chart" class="mt-4"></canvas>
-            </div>
-          </div>
+      <label for="month" class="col-form-label">Choose a month:</label>
+      <div class="col-md-2" style="margin-bottom:10px;">
+          <select id="month" class="form-control" name="month">
+            <option value="1"{% if month == '1' %}selected="selected"{% endif %}>January</option>
+            <option value="2" {% if month == '2' %}selected="selected"{% endif %}>February</option>
+            <option value="3" {% if month == '3' %}selected="selected"{% endif %}>March</option>
+            <option value="4" {% if month == '4' %}selected="selected"{% endif %}>April</option>
+            <option value="5" {% if month == '5' %}selected="selected"{% endif %}>May</option>
+            <option value="6" {% if month == '6' %}selected="selected"{% endif %}>June</option>
+            <option value="7" {% if month == '7' %}selected="selected"{% endif %}>July</option>
+            <option value="8" {% if month == '8' %}selected="selected"{% endif %}>August</option>
+            <option value="9" {% if month == '9' %}selected="selected"{% endif %}>September</option>
+            <option value="10" {% if month == '10' %}selected="selected"{% endif %}>October</option>
+            <option value="11" {% if month == '11' %}selected="selected"{% endif %}>November</option>
+            <option value="12" {% if month == '12' %}selected="selected"{% endif %}>December</option>
+          </select>
         </div>
-        <div class="col-md-5 grid-margin stretch-card">
-          <div class="card">
-            <div class="card-body">
-              <h4 class="card-title">Traffic Sources</h4>
-              <canvas id="traffic-chart"></canvas>
-              <div id="traffic-chart-legend" class="rounded-legend legend-vertical legend-bottom-left pt-4"></div>
-            </div>
-          </div>
-        </div>
-      </div> {% endcomment %}
       <div class="row">
-        <div class="col-lg-6 grid-margin stretch-card">
-          <div class="card">
-            <div class="card-body">
-              <h4 class="card-title">Pie chart</h4>
-              <canvas id="pieChart" style="height:250px"></canvas>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-6 grid-margin stretch-card">
-          <div class="card">
-            <div class="card-body">
-              <h4 class="card-title">Bar chart</h4>
-              <canvas id="barChart" style="height:230px"></canvas>
-            </div>
-          </div>
-        </div>
+        <div id="chartContainer" style="height: 280px; width: 95%;margin-bottom:20px"></div>
+      
       </div>
+      <br>
       <div class="row">
-        <div class="report-bar">
-          <div class="label">Sale Report</div>
+      <div class="report-bar" style="width:98%;">
+         <div class="label">Sale Report</div>
           <form method="post" action="{% url 'sale_report' %}">
             {% csrf_token %}
             <div class="report-bar">
@@ -171,7 +157,56 @@
     <!-- partial -->
   </div>
   <!-- main-panel ends -->
+  {% endblock %}
   {% block script %}
+  <script>
+    window.onload = function () {
+        // Assuming orders_by_week is passed from Django and contains your data
+        var orders_by_week = {{ orders_by_week|safe }};
+
+        var dataPoints = orders_by_week.map(function (value, index) {
+            return { y: value, label: "Week " + (index + 1) };
+        });
+
+        var chart = new CanvasJS.Chart("chartContainer", {
+            animationEnabled: true,
+            theme: "light2",
+            title: {
+                text: "Total Orders Per Week"
+            },
+            axisY: {
+                title: "Total Orders"
+            },
+            data: [{
+                type: "column",
+                showInLegend: false,
+                dataPoints: dataPoints
+            }]
+        });
+
+        chart.render();
+    }
+</script>
+
+
+<script>
+  $(document).ready(function () {
+      // Select the <select> element by its id
+      var selectElement = $("#month");
+
+      // Add a change event listener to the <select> element
+      selectElement.on("change", function () {
+          // Get the selected value
+          var selectedValue = selectElement.val();
+
+          // Construct the URL with the selected value
+          var url = "/user/adminn/?year=2023&month=" + selectedValue;
+
+          // Redirect to the constructed URL
+          window.location.href = url;
+      });
+  });
+</script>
+
 {% endblock script %}
  
-  {% endblock %}

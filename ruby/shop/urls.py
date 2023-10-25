@@ -38,6 +38,7 @@ urlpatterns = [
     path('razor/',views.razorpayment,name='razor'),
     
     path('invoice/<int:id>',views.invoice,name='invoice'),
+    # path('orders_by_week/',views.orders_by_week,name='orders_by_week')
         
 ]
 if settings.DEBUG:

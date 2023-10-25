@@ -18,7 +18,7 @@ from django.db.models import Sum
 from django.db.models.functions import ExtractMonth, ExtractYear
 from django.db.models import F,Q
 from django.db.models import ExpressionWrapper, FloatField
-from datetime import datetime
+from datetime import date, datetime, timedelta
 import time    
 import openpyxl
 from openpyxl.styles import Alignment
@@ -207,14 +207,51 @@ def admin(request):
         total_revenue+=float(ord.amount)
     for usr in users:
         total_user+=1
-    print('tot rev',total_order)
+    
+    year = request.GET.get('year', None)
+    month = request.GET.get('month', None)
+
+    if year is None:
+        current_date = datetime.now()
+        year = current_date.year
+    else:
+        year = int(year)
+
+    if month is None:
+        current_date = datetime.now()
+        month = current_date.month
+    else:
+        month = int(month)
+
+        
+    first_day = date(int(year), int(month), 1)
+    last_day = (first_day + timedelta(days=31)).replace(day=1) - timedelta(days=1)
+
+    orders_by_week = []
+    current_week_start = first_day
+    week_number = 1
+
+    while current_week_start <= last_day:
+        current_week_end = current_week_start + timedelta(days=6)
+
+        # Count the number of orders for the current week
+        week_orders_count = Order.objects.filter(date__range=(current_week_start, current_week_end)).count()
+
+        # Append the week's orders count to the result list
+        orders_by_week.append(week_orders_count)
+
+        # Move to the next week
+        current_week_start = current_week_end + timedelta(days=1)
+        week_number += 1
     context={
         'order':order,
         'total_user':total_user,
         'total_order':total_order,
         'total_revenue':total_revenue,
         'notification':notification,
-        'users':users
+        'users':users,
+        'orders_by_week': orders_by_week,
+        'month':month,
     }
     return render(request,'admin/index1.html',context)
 
