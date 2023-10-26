@@ -397,7 +397,7 @@ def categoryc(request):
 @user_passes_test(lambda u: u.is_staff, login_url='login')
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def products(request):
-    prod=product.objects.all().order_by('id')
+    prod=product.objects.all().order_by('-id')
     page=Paginator(prod,8)
     page_number = request.GET.get('page')
     prod = page.get_page(page_number)

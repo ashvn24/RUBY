@@ -82,7 +82,7 @@ def shop(request):
         elif selected_sorting == 'Price Decen':
             prod= product.objects.filter(is_deleted=False).order_by('-price')
     else:
-        prod=product.objects.filter(is_deleted=False).order_by('id')
+        prod=product.objects.filter(is_deleted=False).order_by('-id')
     page=Paginator(prod,6)
     page_number = request.GET.get('page')
     prod = page.get_page(page_number)
