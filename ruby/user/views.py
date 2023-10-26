@@ -81,10 +81,39 @@ def register(request):
         request.session['email'] = email
         request.session['otp'] = otp
         request.session['otp_expiration_time'] = expiration_time  # Store expiration time in session
-        messages.success(request, 'OTP is sent to your email')
         return redirect('verify_signup')
     
     return render(request, 'loginpage.html')
+
+
+def resend_otp(request):
+    if request.method == 'POST':
+        email = request.session.get('email')
+        if email:
+            otp, expiration_time = generate_otp()  # Generate a new OTP and expiration time
+            sender_email = "ashwinvk77@gmail.com"
+            receiver_mail = email
+            password = "ktsg khti mimn zphi"
+
+            try:
+                with smtplib.SMTP("smtp.gmail.com", 587) as server:
+                    server.starttls()
+                    server.login(sender_email, password)
+                    server.sendmail(sender_email, receiver_mail, otp)
+            except smtplib.SMTPAuthenticationError:
+                print( 'Failed to send OTP email. Please check your email configuration.')
+                return redirect('login')
+
+            # Update the session with the new OTP and expiration time
+            request.session['otp'] = otp
+            request.session['otp_expiration_time'] = expiration_time
+            return redirect('verify_signup')
+            
+        else:
+            print( 'Email not found in the session.')
+    
+    # Redirect back to the login page
+    return redirect('login')
                 
 
 def generate_otp(length=6, expiry_time=60):
@@ -114,20 +143,18 @@ def verify_signup(request):
                 del request.session['otp']
                 del request.session['otp_expiration_time']
                 auth.login(request, user)
-                messages.success(request, "Signup successful!")
                 device_id = request.COOKIES.get('device_id')
                 response = redirect('index')
                 response.delete_cookie('device_id')
                 return response
             else:
                 user.delete()
-                messages.info(request, "Invalid OTP")
+                # messages.info(request, "Invalid OTP")
                 del request.session['email']
                 return redirect('login')
         else:
             user.delete()
-            messages.info(request, "OTP has expired")
-            print("OTP has expired")
+            # messages.info(request, "OTP has expired")
             del request.session['email']
             return redirect('login')
     

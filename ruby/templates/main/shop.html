@@ -95,9 +95,13 @@
                     <div class="shop-page-products-wrap">
                         <div class="products-wrapper">
                             
-                                <p style="color:red;">
-                                    {{m1}}
-                                </p>
+                            {% if messages %}
+                            <ul class="messages">
+                                {% for message in messages %}
+                                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
                                 
                             <div class="row">
 

@@ -28,7 +28,6 @@ def home(request):
     
     maincategory=main_category.objects.all().order_by('id')
     prod=product.objects.filter(section__name='New products',is_deleted=False)
-    print(prod)
     context={
         'maincategory':maincategory,
         'prod':prod
@@ -49,23 +48,18 @@ def shop(request):
         wish= wishlist.objects.filter(user=device_id).values('product')
     else:
         wish= wishlist.objects.filter(user=request.user).values('product')
-        print(wish)
     
     gender = request.GET.get('gender', None)
     type=request.GET.get('material', None)
     # cat=request.GET.get('category',None)
     user_input_search = request.GET.get('product')
     selected_sorting = request.GET.get('sort', 'Position')
-    print('select:',selected_sorting)
-    print(type)
-    print('gender',gender)
     
     if gender:
         desired_main_category = main_category.objects.get(id=gender)
         prod= product.objects.filter(categories__category__maincat__name=desired_main_category,is_deleted=False)
     elif type:
         gold_categories = category.objects.filter(name__icontains=type)
-        print(gold_categories)
         prod = product.objects.filter(categories__category__in=gold_categories,is_deleted=False)
     elif user_input_search:
         user_input_search = user_input_search.strip()
@@ -109,7 +103,6 @@ def product_details(request,slug):
     maincategory=main_category.objects.all().order_by('id')
     prod=product.objects.filter(slug=slug)
     feed= Feedback.objects.all()
-    print('feeed',feed)
     if request.method == 'POST':
         name = request.POST['name']
         review = request.POST['review']
@@ -174,18 +167,18 @@ def Profile_update(request,id):
         users.email=email
         users.ph_no=ph_no
         users.save() 
-        if current != None and current!=users.password:
-            messages.error(request, 'Please enter correct password')
-            print('not correct')
-        else :
+        if current != None and auth.authenticate(email=users, password=current):
             pass1=request.POST.get('newpass')
             pass2=request.POST.get('newpassconf')
             if pass1==pass2:
-                users.password=pass1
+                users.set_password(pass1)
                 users.save()
-            messages.error(request,'password not same!')
-            print('not same')
-
+                print("changed")
+            else :
+                messages.error(request,'password didnt match!')
+                print('not same')
+        else:
+            messages.error(request, "Your current password is incorrect.")
              
         return redirect("profile")
 
@@ -222,7 +215,6 @@ def edit_addrs(request,id):
 
 @login_required(login_url='login')
 def add_adrs(request):
-    print('---------------------------------------------here')
     maincategory=main_category.objects.all().order_by('id')
     if request.method=="POST":
         fname=request.POST.get('adfirst_name')
