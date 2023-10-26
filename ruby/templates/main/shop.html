@@ -75,9 +75,9 @@
                             <ul class="product-view d-flex align-items-center">
                                 <li class="current column-gird"><i class="fa fa-bars fa-rotate-90"></i></li>
                                 <li class="box-gird"><i class="fa fa-th"></i></li>
-                                <li class="list"><i class="fa fa-list-ul"></i></li>
+                                
                             </ul>
-                            <span class="show-items">Items 1 - 9 of 17</span>
+                            
                         </div>
 
                         <div class="product-sort_by d-flex align-items-center mt-3 mt-md-0">
@@ -179,15 +179,29 @@
                     <div class="products-settings-option d-block d-md-flex">
                         <nav class="page-pagination">
                             <ul class="pagination">
-                                <li><a href="#" aria-label="Previous">&laquo;</a></li>
-                                <li><a class="current" href="#">1</a></li>
-                                <li><a href="#">2</a></li>
-                                <li><a href="#">3</a></li>
-                                <li><a href="#" aria-label="Next">&raquo;</a></li>
+                                <li class="page-item">
+                                    {% if prod.has_previous %}
+                                    <a class="page-link" href="?page={{prod.previous_page_number}}" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                    {% endif %}
+                                </li>
+                                <li class="page-item active">
+                                    <a class="page-link" href="">{{prod.number}}</a>
+                                </li>
+                                
+                                <li class="page-item">
+                                    {% if prod.has_next %}
+                                    <a class="page-link" href="?page={{prod.next_page_number}}" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                    {% endif %}
+                                </li>
                             </ul>
                         </nav>
+                        
 
-                        <div class="product-per-page d-flex align-items-center mt-3 mt-md-0">
+                        {% comment %} <div class="product-per-page d-flex align-items-center mt-3 mt-md-0">
                             <label for="show-per-page">Show Per Page</label>
                             <select name="sort" id="show-per-page">
                                 <option value="9">9</option>
@@ -195,7 +209,7 @@
                                 <option value="21">21</option>
                                 <option value="6">27</option>
                             </select>
-                        </div>
+                        </div> {% endcomment %}
                     </div>
                 </div>
             </div>

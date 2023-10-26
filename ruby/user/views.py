@@ -9,6 +9,7 @@ from django.views.decorators.cache import cache_control,never_cache
 from django.contrib.auth.decorators import login_required,user_passes_test
 import smtplib
 import secrets
+from django.core.paginator import Paginator
 from django.conf import settings
 from cart.cart import Cart
 from decimal import Decimal
@@ -194,7 +195,7 @@ def logoutPage(request):
 def admin(request):
     users=CustomUser.objects.all()
     notification=Notification.objects.all().order_by('-id')
-    order=Order.objects.all()
+    order=Order.objects.filter(status__in=['delivered', 'completed'])
     total_order=0
     total_revenue=0
     total_user=0
@@ -231,7 +232,7 @@ def admin(request):
         current_week_end = current_week_start + timedelta(days=6)
 
         # Count the number of orders for the current week
-        week_orders_count = Order.objects.filter(date__range=(current_week_start, current_week_end)).count()
+        week_orders_count = Order.objects.filter(date__range=(current_week_start, current_week_end),status__in=['delivered', 'completed']).count()
 
         # Append the week's orders count to the result list
         orders_by_week.append(week_orders_count)
@@ -346,11 +347,13 @@ def admin_logout(request):
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def admin_users(request):
         users = CustomUser.objects.filter(is_staff= False)
+        page=Paginator(users,10)
+        page_number = request.GET.get('page')
+        users = page.get_page(page_number)
         context = {
                 'users': users,
             }
         return render(request,'admin/pages/tables/bas.html',context)
-        return redirect('admin_users')
 
 @user_passes_test(lambda u: u.is_staff, login_url='login')
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)    
@@ -368,7 +371,9 @@ def categoryc(request):
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def products(request):
     prod=product.objects.all().order_by('id')
-    
+    page=Paginator(prod,8)
+    page_number = request.GET.get('page')
+    prod = page.get_page(page_number)
     context={
         'prod':prod,
     }
@@ -515,9 +520,6 @@ def update_sub(request,id):
 
 @user_passes_test(lambda u: u.is_staff, login_url='login')
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
-def view_product(request):
-    return render(request,'admin/pages/tables/view_product.html')
-
 def edit_products(request,id):
     sub=sub_category.objects.all()
     cat=main_category.objects.all()
@@ -648,6 +650,9 @@ def update_product(request,id):
     
 def all_orders(request):
     orders = Order.objects.all().order_by('-date')
+    page=Paginator(orders,6)
+    page_number = request.GET.get('page')
+    orders = page.get_page(page_number)
     context={
         'orders':orders
     }

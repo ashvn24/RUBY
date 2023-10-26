@@ -38,7 +38,6 @@ urlpatterns = [
     path('update_sub/<int:id>',views.update_sub,name='update_sub'),
 
 
-    path('view_product/',views.view_product,name='view_product'),
     path('edit_products/<int:id>',views.edit_products,name="edit_products"),
     path('add_product/',views.add_product,name="add_product"),
     path('delete_product/<int:id>',views.delete_product,name="delete_product"),

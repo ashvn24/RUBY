@@ -6,6 +6,7 @@ from django.contrib import  auth,messages
 from django.views.decorators.cache import cache_control,never_cache
 from django.contrib.auth.decorators import login_required
 from cart.cart import Cart
+from django.core.paginator import Paginator
 from django.conf import settings
 from django.db.models import F, Q
 import razorpay 
@@ -17,6 +18,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import letter
 
+from django.contrib.auth.models import AnonymousUser
 
 # Create your views here.
 
@@ -42,8 +44,12 @@ def shop(request):
     sub=sub_category.objects.values('name').distinct()
 
     cat=category.objects.values('name').distinct()
-    wish= wishlist.objects.filter(user=request.user).values('product')
-    print(wish)
+    if isinstance(request.user, AnonymousUser):
+        device_id = request.COOKIES.get('device_id')
+        wish= wishlist.objects.filter(user=device_id).values('product')
+    else:
+        wish= wishlist.objects.filter(user=request.user).values('product')
+        print(wish)
     
     gender = request.GET.get('gender', None)
     type=request.GET.get('material', None)
@@ -83,6 +89,9 @@ def shop(request):
             prod= product.objects.filter(is_deleted=False).order_by('-price')
     else:
         prod=product.objects.filter(is_deleted=False).order_by('id')
+    page=Paginator(prod,6)
+    page_number = request.GET.get('page')
+    prod = page.get_page(page_number)
     
     context={
         'maincategory':maincategory,
@@ -308,7 +317,6 @@ def cart_clear(request):
     return redirect("cart_detail")
 
 
-@login_required(login_url='login')
 def cart_detail(request):
     maincategory=main_category.objects.all().order_by('id')
     Coupon=None
