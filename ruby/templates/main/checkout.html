@@ -476,7 +476,7 @@ var options = {
            
             var totalAmount;
 
-                if ({{ cart_total_amount }} <sc 500) {
+                if ({{ cart_total_amount }} < 500) {
                     totalAmount = {{ cart_total_amount }};
                 } else if ({{ cart_total_amount }} > 500) {
                     if (couponDiscount) { // Check if couponDiscount has a value
@@ -535,8 +535,12 @@ var placeOrderButton = document.getElementById('placeOrderButton');
     } 
 }); 
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<scrip>
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+
+<script>
+
     $(document).ready(function () {
         $('#address-form').on('submit', function (e) {
             e.preventDefault(); // Prevent the default form submission
@@ -565,7 +569,7 @@ var placeOrderButton = document.getElementById('placeOrderButton');
     });
 </script>
 
-</script>
+
 
 
 <script>
@@ -625,7 +629,7 @@ var placeOrderButton = document.getElementById('placeOrderButton');
         // Check if it's a positive number with exactly 6 digits
         return /^[0-9]{6}$/.test(pin);
     }
-</script>
+</script> 
 
 
 
