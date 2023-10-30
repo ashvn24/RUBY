@@ -101,15 +101,8 @@ def shop(request):
 
 def product_details(request,slug):
     maincategory=main_category.objects.all().order_by('id')
-    prod=product.objects.filter(slug=slug)
-    feed= Feedback.objects.all()
-    if request.method == 'POST':
-        name = request.POST['name']
-        review = request.POST['review']
-        pid=request.POST['productid']
-        Product = product.objects.get(id=pid)
-        feedback = Feedback(name=name, review=review, product=Product)
-        feedback.save()
+    prod=product.objects.get(slug=slug)
+    feed= Feedback.objects.filter(product=prod)
     context={
         'maincategory':maincategory,
         'prod':prod,
@@ -117,6 +110,8 @@ def product_details(request,slug):
         }
     return render(request,'main/product_detail.html',context)
 
+
+    
 @login_required(login_url='login')
 def Profile(request):
     maincategory=main_category.objects.all().order_by('id')
@@ -569,6 +564,16 @@ def order_details(request,id):
     }
     return render(request,'main/order_details.html',context)
 
+
+def feedback(request,id):
+    prod=product.objects.get(id=id)
+    print(prod)
+    if request.method== 'POST':
+        review = request.POST['review']
+        feedback = Feedback(name=request.user, review=review, product=prod)
+        feedback.save()
+        return render(request,'main/order_details.html')
+
 @login_required(login_url='login')
 def Wishlist(request):
     maincategory=main_category.objects.all().order_by('id')
@@ -600,7 +605,7 @@ def cancel(request,id):
     prod=product.objects.get(product_name=OrderItem.product)
     prod.stock+=1
     prod.save()
-    if OrderItem.status == 'completed' and OrderItem.payment_type=='cash':
+    if OrderItem.status == 'completed' or OrderItem.status == 'delivered' and OrderItem.payment_type=='cash':
         wallet= Wallet.objects.create(
         user=user,
         order=OrderItem,

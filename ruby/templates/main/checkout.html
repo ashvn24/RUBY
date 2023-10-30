@@ -125,7 +125,7 @@
             <select id="addressDropdown" name="address">
                 <option selected>Choose</option>
                 {% for ad in addrs %}
-                    <option value="{{ad.id}}">{{ad.first_name}}-{{ad.last_name}} {{ad.addressline1}}</option>
+                    <option value="{{ad.id}}">{{ad.first_name}} {{ad.addressline1}}</option>
                 {% endfor %}
             </select>
             
@@ -540,17 +540,16 @@ var placeOrderButton = document.getElementById('placeOrderButton');
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
 
 <script>
-
     $(document).ready(function () {
         $('#address-form').on('submit', function (e) {
             e.preventDefault(); // Prevent the default form submission
-    
+
             // Collect the form data
             var formData = $(this).serialize();
-    
+
             // Define the URL where you want to send the form data
             var url = '{% url "add_addrs" %}';
-    
+
             // Send an AJAX POST request
             $.ajax({
                 type: 'POST',
@@ -559,6 +558,9 @@ var placeOrderButton = document.getElementById('placeOrderButton');
                 success: function (data) {
                     // Handle the success response here if needed
                     console.log('Form submitted successfully');
+                    
+                    // Reload the page after a successful submission
+                    location.reload();
                 },
                 error: function (error) {
                     // Handle any errors here if needed
@@ -568,6 +570,7 @@ var placeOrderButton = document.getElementById('placeOrderButton');
         });
     });
 </script>
+
 
 
 

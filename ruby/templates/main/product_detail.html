@@ -9,7 +9,6 @@
             <div class="col-lg-12">
                 <div class="single-product-page-content">
                     <div class="row">
-                        {% for i in prod %}
                         <!-- Product Thumbnail Start -->
                         <div class="col-lg-5">
                             <div class="product-thumbnail-wrap">
@@ -17,11 +16,11 @@
                                     
                                     <div class="single-thumb-item" >
                                         <a href="single-product.html"><img class="img-fluid"
-                                                                           src="{{i.product_image.url}}"
+                                                                           src="{{prod.product_image.url}}"
                                                                            alt="Product"/></a>
                                     </div>
                                     
-                                    {% for j in i.product_images_set.all %}
+                                    {% for j in prod.product_images_set.all %}
                                     <div class="single-thumb-item" >
                                         <a href="single-product.html"><img class="img-fluid" 
                                                                            src="{{j.images.url}}"
@@ -38,8 +37,8 @@
                         
                         <div class="col-lg-7 mt-5 mt-lg-0">
                             <div class="product-details">
-                                <h2><a href="single-product.html">{{i.product_name}}</a></h2>
-                                <input type="text" value="{{i.id}}" name="ppid" hidden >
+                                <h2><a href="single-product.html">{{prod.product_name}}</a></h2>
+                                <input type="text" value="{{prod.id}}" name="ppid" hidden >
 
                                 <div class="rating">
                                     <i class="fa fa-star"></i>
@@ -49,14 +48,14 @@
                                     <i class="fa fa-star-o"></i>
                                 </div>
 
-                                <span class="price">{{i.price}}</span>
+                                <span class="price">{{prod.price}}</span>
                                 {% if i.stock == 0 %}
                                 <div class="product-info-stock-sku">
                                     <span class="product-stock-status"style="color:red;">Out of Stock</span>
                                     <span class="product-sku-status ml-5"><strong>SKU</strong> MH03</span>
                                 </div>
 
-                                <p class="products-desc">{{i.product_information}}</p>
+                                <p class="products-desc">{{prod.product_information}}</p>
 
 
                                 {% else %}
@@ -65,14 +64,14 @@
                                     <span class="product-sku-status ml-5"><strong>SKU</strong> MH03</span>
                                 </div>
 
-                                <p class="products-desc">{{i.product_information|safe}}</p>
+                                <p class="products-desc">{{prod.product_information|safe}}</p>
 
                                 <div class="product-quantity mt-5 d-flex align-items-center">
-                                    <a class="btn btn-add-to-cart addToCartBtn" data-product-id="{{ i.id }}">Add to Cart</a>
+                                    <a class="btn btn-add-to-cart addToCartBtn" data-product-id="{{ prod.id }}">Add to Cart</a>
                                 </div>
                                 {% endif %}
                                 <div class="product-btn-group d-none d-sm-block product_wish">
-                                    <a class="btn btn-add-to-cart btn-whislist" data-product-id="{{ i.id }}">+ Add to
+                                    <a class="btn btn-add-to-cart btn-whislist" data-product-id="{{ prod.id }}">+ Add to
                                         Wishlist</a>
                                     <a href="single-product.html" class="btn btn-add-to-cart btn-whislist">+ Add to
                                         Compare</a>
@@ -130,7 +129,7 @@
                                 <!-- Single Product tab Content -->
                                 
                                 <div class="tab-content" id="nav-tabContent">
-                                    {% for j in i.add_description_set.all %}
+                                    {% for j in prod.add_description_set.all %}
                                     <div class="tab-pane fade show active" id="description">
                                         <p>{{j.add_description|safe}}</p>
 
@@ -206,40 +205,7 @@
                                                         {% endfor %} 
 
                                                     </div>
-                                                    <div class="ratting-form-wrapper fix">
-                                                        <h3>Add your Comments</h3>
-                                                        <form action="#" method="post">
-                                                            {% csrf_token %}
-                                                            <div class="ratting-form row">
-                                                                <div class="col-12 mb-4">
-                                                                    <h5>Rating:</h5>
-                                                                    <div class="ratting-star fix">
-                                                                        <i class="fa fa-star-o"></i>
-                                                                        <i class="fa fa-star-o"></i>
-                                                                        <i class="fa fa-star-o"></i>
-                                                                        <i class="fa fa-star-o"></i>
-                                                                        <i class="fa fa-star-o"></i>
-                                                                    </div>
-                                                                </div>
-                                                                
-                                                                    <div class="col-md-6 col-12 mb-4">
-                                                                        <label for="name">Name:</label>
-                                                                        <input id="name" name="name" placeholder="Name" type="text">
-                                                                        <input type="text" value="{{i.id}}" name="productid" hidden />
-                                                                    </div>
-                                                                    
-                                                                    <div class="col-12 mb-4">
-                                                                        <label for="your-review">Your Review:</label>
-                                                                        <textarea name="review" id="your-review"
-                                                                                placeholder="Write a review"></textarea>
-                                                                    </div>
-                                                                    <div class="col-12">
-                                                                        <button type="submit"class="btn-login btn-add-to-cart">Add Review</button>
-                                                                    </div>
-                                                                
-                                                            </div>
-                                                        </form>
-                                                    </div>
+                                                    
                                                 </div>
                                             </div>
                                         </div>
@@ -250,7 +216,7 @@
                             <!-- Product Full Description End -->
                         </div>
                     </div>
-                    {% endfor %}
+                    
                 </div>
             </div>
             <!-- Single Product Page Content End -->
