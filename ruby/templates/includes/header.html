@@ -48,7 +48,7 @@
                                     <li><a href="single-blog.html">Blog Details</a></li>
                                 </ul> {% endcomment %}
                             </li>
-                            <li><a href="contact.html">Contact Us</a></li>
+                            <li><a href="{% url 'contact' %}">Contact Us</a></li>
                             
                         </ul>
                     </nav>
@@ -78,7 +78,6 @@
                                     {% endif %}
                                     <dd><a href="{% url 'profile' %}">Profile</a></dd>
                                     <dd><a href="{% url 'wishlist' %}">Wishlist</a></dd>
-                                    <dd><a href="#">Compare</a></dd>
                                     {% if user.is_authenticated %}
                                     <dd><a href="{%url 'logout' %}">
                                         Logout

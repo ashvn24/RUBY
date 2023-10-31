@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path,include
 from . import views
 
 urlpatterns = [
@@ -9,6 +9,8 @@ urlpatterns = [
     path('verify/',views.verify_signup,name="verify_signup"),
     path('admin_logout/',views.admin_logout,name='admin_logout'),
     path('resend_otp/', views.resend_otp, name='resend_otp'),
+    
+    
     
     path('adminn/',views.admin,name='admin'),
     path('users/',views.admin_users,name='admin_users'),

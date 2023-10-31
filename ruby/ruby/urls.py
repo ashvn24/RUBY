@@ -25,4 +25,7 @@ urlpatterns = [
     path('base/',views.base,name='base'),
     path('base1/',views.base1,name='base1'),
     path('adminbase/',views.adminbase,name='adminbase'),
+    
+    path('accounts/',include('allauth.urls')),
+    path("convert/", include("guest_user.urls")),
     ]

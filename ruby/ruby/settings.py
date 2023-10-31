@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -31,6 +32,8 @@ ALLOWED_HOSTS = []
 RAZORPAY_API_KEY = 'rzp_test_0frWrGJ51qmtAs'
 RAZORPAY_API_SECRET = 'zvSCdulDyjzOhmrRJmEp1Hdj'
 
+SITE_ID = 2
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -39,14 +42,31 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'django.contrib.staticfiles', 
     'shop',
     'user',
     'ckeditor',
     'ckeditor_uploader',
     'cart',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    "guest_user",
 
 ]
+
+SOCIALACCOUNT_PROVIDERS={
+    "google":{
+        "SCOPE":[
+            "profile",
+            "email",
+        ],
+        "AUTH_PARAMS":{"access_type":"online"}
+    }
+}
+
 CART_SESSION_ID = 'cart'
 AUTH_USER_MODEL = 'user.CustomUser'
 
@@ -58,6 +78,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = 'ruby.urls'
@@ -197,3 +218,13 @@ CKEDITOR_CONFIGS = {
         ),
     }
 }
+
+AUTHENTICATION_BACKENDS=(
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+    "guest_user.backends.GuestBackend",
+    
+)
+
+LOGIN_REDIRECT_URL = 'index'
+LOGOUT_REDIRECT_URL = 'login    '

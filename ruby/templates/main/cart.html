@@ -24,6 +24,7 @@
                         </tr>
                         </thead>
                         <tbody>
+                            
                         {% for key,value in request.session.cart.items %}
                         <tr id="id{{value.id}}">
                             <td class="pro-thumbnail"><a href="#"><img class="img-fluid" src="{{value.product_image}}"
@@ -40,9 +41,13 @@
                                     </div>
                                     <div class ="col-4">
                                         <input type="text" value="{{value.quantity}}" size="1"class = " border-0">
+                                        
                                     </div>
-                                    <div class ="col-4">
-                                        <a href = "{% url 'item_increment' value.product_id %}#id{{value.id}}" class="text-center">+</a>
+                                    <div class ="col-4 cart-detail">
+                                        {% comment %} <a href = "{% url 'item_increment' value.product_id %}#id{{value.id}}" class="text-center">+</a> {% endcomment %}
+                                        <a class="text-center btn increment" data-product-id="{{value.product_id}}">+</a>
+                                        {% comment %} <a class="btn btn-add-to-cart addToCartBtn" data-product-id="{{ i.id }}" >+ Add to Cart</a> {% endcomment %}
+
                                     </div>
 
                                 </div>
@@ -52,6 +57,7 @@
                             <td class="pro-remove"><a href="{% url 'item_clear' key %}#id{{value.id}}"><i class="fa fa-trash-o"></i></a></td>
                         </tr>
                         {% endfor %}
+                    
                         </tbody>
                     </table>
                 </div>
@@ -142,6 +148,9 @@
     </div>
 </div>
 <!--== Page Content Wrapper End ==-->
+{% endblock %}
+
+{% block script %}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         // Get references to the HTML elements
@@ -163,4 +172,96 @@
     });
 </script>
 
-{% endblock %}
+{% comment %} <scrip>
+    
+    var counter = 0;
+      $(document).on('click', ".increment", function(){
+      
+          var _vm = $(this).closest('.cart-detail');
+          
+        
+          var _productId = $(this).data('product-id'); // Get product ID from data attribute
+      
+          console.log( _productId);
+          counter++;
+          $('#cart-count').text(counter);
+         //ajax
+         $.ajax({
+          url: '/cart/item_increment/',
+          data: {
+              'id': _productId,
+             
+          },
+          dataType: 'json',
+          beforeSend: function(){
+              _vm.attr('disabled', true);
+          },
+          success: function(response) {
+           
+          },
+          error: function(error) {
+              console.log('Error:', error);
+          }
+         });
+      });
+      
+  
+      </script> {% endcomment %}
+
+    
+
+
+<script>
+    $(document).ready(function() {
+        // Function to load the cart content
+        function loadCartContent() {
+            $.ajax({
+                type: "GET",
+                url: "{% url 'cart_detail' %}",  // Replace with your cart view URL
+                dataType: "json",
+                success: function(data) {
+                    // Update the cart content div with the new HTML
+                    $("#cart-content").html(data.cart_html);
+                },
+                error: function() {
+                    // Handle errors if necessary
+                }
+            });
+        }
+    
+        // Call the function to load cart content when the page loads
+        loadCartContent();
+    
+        // Increment button click event
+        $(document).on('click', ".increment", function() {
+            var _vm = $(this).closest('.cart-detail');
+            var _productId = $(this).data('product-id');
+    
+            $.ajax({
+                url: '/cart/item_increment/',
+                data: {
+                    'id': _productId,
+                },
+                dataType: 'json',
+                beforeSend: function() {
+                    _vm.attr('disabled', true);
+                },
+                success: function(response) {
+                    // Handle success, e.g., update the cart count and load the cart content
+                    counter++;
+                    $('#cart-count').text(counter);
+                    loadCartContent(); // Reload the cart content after the increment
+                },
+                error: function(error) {
+                    console.log('Error:', error);
+                }
+            });
+        });
+    });
+</script>
+    
+            
+      
+{% endblock script %}
+
+

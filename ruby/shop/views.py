@@ -19,6 +19,7 @@ from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import letter
 
 from django.contrib.auth.models import AnonymousUser
+from guest_user.decorators import allow_guest_user
 
 # Create your views here.
 
@@ -35,6 +36,7 @@ def home(request):
     
     return render(request,'main/home.html',context)
 
+@allow_guest_user
 def shop(request):
    
     maincategory=main_category.objects.all().order_by('id')
@@ -113,6 +115,7 @@ def product_details(request,slug):
 
     
 @login_required(login_url='login')
+@allow_guest_user
 def Profile(request):
     maincategory=main_category.objects.all().order_by('id')
     user=request.user
@@ -144,6 +147,7 @@ def Profile(request):
     return render(request,'main/profile.html',context)
 
 @login_required(login_url='login')
+@allow_guest_user
 def Profile_update(request,id):
    
     users = CustomUser.objects.get(id=id)
@@ -209,6 +213,7 @@ def edit_addrs(request,id):
     return render(request,'main/edit_addrs.html',context)
 
 @login_required(login_url='login')
+@allow_guest_user
 def add_adrs(request):
     maincategory=main_category.objects.all().order_by('id')
     if request.method=="POST":
@@ -279,9 +284,10 @@ def item_clear(request, id):
 
 
 
-def item_increment(request, id):
+def item_increment(request):
+    product_id=request.GET['id']
     cart = Cart(request)
-    Product = product.objects.get(id=id)
+    Product = product.objects.get(id=product_id)
     cart.add(product=Product)
     return redirect("cart_detail")
 
@@ -330,6 +336,7 @@ def cart_detail(request):
     
 @login_required(login_url='login')
 @csrf_exempt
+@allow_guest_user
 def checkout(request):
     cart_item = request.session.get(settings.CART_SESSION_ID, {})
     if not cart_item:
@@ -392,6 +399,8 @@ def checkout(request):
         
         }
     return render(request,'main/checkout.html',context)
+
+@allow_guest_user
 @login_required(login_url='login')
 @csrf_exempt
 def place_order(request):
@@ -469,6 +478,8 @@ def place_order(request):
         
 
     return render(request,'main/checkout.html',{'total_price':total_price})
+
+@allow_guest_user
 @login_required(login_url='login')
 def razorpayment(request):
 
@@ -533,6 +544,7 @@ def razorpayment(request):
         
 
 @csrf_exempt
+@allow_guest_user
 def order_success(request):
     orders = Order.objects.filter(user=request.user)
     maincategory=main_category.objects.all().order_by('id')
@@ -543,8 +555,15 @@ def order_list(request):
     orders = Order.objects.filter(user=request.user).latest('-id')
     return render(request,'main/profile.html',{'orders':orders})
 
+@allow_guest_user
 @login_required(login_url='login')
 def order_details(request,id):
+    if request.method== 'POST':
+        review = request.POST['review']
+        prod=request.POST['product']
+        prod=product.objects.get(id=prod)
+        feedback = Feedback(name=request.user, review=review, product=prod)
+        feedback.save()
     maincategory=main_category.objects.all().order_by('-id')
 
     orders = Order.objects.filter(id=id)
@@ -565,16 +584,9 @@ def order_details(request,id):
     return render(request,'main/order_details.html',context)
 
 
-def feedback(request,id):
-    prod=product.objects.get(id=id)
-    print(prod)
-    if request.method== 'POST':
-        review = request.POST['review']
-        feedback = Feedback(name=request.user, review=review, product=prod)
-        feedback.save()
-        return render(request,'main/order_details.html')
 
 @login_required(login_url='login')
+@allow_guest_user
 def Wishlist(request):
     maincategory=main_category.objects.all().order_by('id')
     wish=wishlist.objects.filter(user=request.user)
@@ -584,6 +596,8 @@ def Wishlist(request):
     }
     return render(request,'main/wishlist.html',context)
 
+
+@allow_guest_user
 def addwish(request):
     product_id=request.GET['id']
     Product=product.objects.get(id=product_id)
@@ -597,6 +611,7 @@ def removewish(request,id):
     Wishlist.delete()
     return redirect('wishlist')
 
+@allow_guest_user
 @login_required(login_url='login')
 def cancel(request,id):
     user=request.user
@@ -678,3 +693,5 @@ def invoice(request,id):
     return FileResponse(buf,as_attachment=True,filename='invoice.pdf')
 
 
+def contact(request):
+    return render(request,'main/contact.html')

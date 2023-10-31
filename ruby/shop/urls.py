@@ -9,12 +9,11 @@ urlpatterns = [
     path('',views.home,name='index'),
     path('shop/',views.shop,name='shop'),
     path('product/<slug:slug>',views.product_details,name='product_detail'),
-    path('feedback,<int:id>',views.feedback,name='feedback'),
     path('profile/',views.Profile,name='profile'),
     path('profile_update/<int:id>',views.Profile_update,name='profile_update'),
     path('cart/add/', views.cart_add, name='cart_add'),
     path('cart/item_clear/<int:id>/', views.item_clear, name='item_clear'),
-    path('cart/item_increment/<int:id>/',views.item_increment, name='item_increment'),
+    path('cart/item_increment/',views.item_increment, name='item_increment'),
     path('cart/item_decrement/<int:id>/',
          views.item_decrement, name='item_decrement'),
     path('cart/cart_clear/', views.cart_clear, name='cart_clear'),
@@ -39,6 +38,8 @@ urlpatterns = [
     path('razor/',views.razorpayment,name='razor'),
     
     path('invoice/<int:id>',views.invoice,name='invoice'),
+    
+    path('contact/',views.contact,name='contact'),
     # path('orders_by_week/',views.orders_by_week,name='orders_by_week')
         
 ]
