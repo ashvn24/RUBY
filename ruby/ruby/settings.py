@@ -27,7 +27,8 @@ SECRET_KEY = 'django-insecure-wbitk22pv3))(1t3*c2+^zoddy$=-#4x4ec^69!ra(b3_7z$#y
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['16.171.46.248','rubyjwellery.shop','www.rubyjwellery.shop']
+
 
 RAZORPAY_API_KEY = 'rzp_test_0frWrGJ51qmtAs'
 RAZORPAY_API_SECRET = 'zvSCdulDyjzOhmrRJmEp1Hdj'
@@ -152,10 +153,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
-STATICFILES_DIRS=[
-    os.path.join(BASE_DIR,'static'),
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
 ]
+
+STATIC_ROOT = '/var/www/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
