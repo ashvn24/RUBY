@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-wbitk22pv3))(1t3*c2+^zoddy$=-#4x4ec^69!ra(b3_7z$#y
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['16.171.46.248','rubyjwellery.shop','www.rubyjwellery.shop']
+ALLOWED_HOSTS = []
 
 
 RAZORPAY_API_KEY = 'rzp_test_0frWrGJ51qmtAs'
@@ -231,4 +231,4 @@ AUTHENTICATION_BACKENDS=(
 )
 
 LOGIN_REDIRECT_URL = 'index'
-LOGOUT_REDIRECT_URL = 'login    '
+LOGOUT_REDIRECT_URL = 'login'
