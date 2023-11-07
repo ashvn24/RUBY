@@ -43,12 +43,12 @@
                                         <button class="btn-login" type="submit">Login</button>
                                     </div>
                                     
-                                    <div class="single-input-item google-login">
+                                    {% comment %} <div class="single-input-item google-login">
                                         {% load socialaccount %}
                                         <a href="{% provider_login_url 'google' %}?next=/">
                                             <i class="fab fa-google"></i> Login with Google
                                         </a>
-                                    </div>
+                                    </div> {% endcomment %}
                                 </form>
                             </div>
                         </div>
