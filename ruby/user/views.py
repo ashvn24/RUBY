@@ -192,7 +192,7 @@ def log(request):
                 messages.error(request, 'Invalid email or password.')
                 return redirect('login')
 
-    return render(request, 'loginpage.html')
+    return render(request, 'main/loginpage.html')
 
 @never_cache    
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
